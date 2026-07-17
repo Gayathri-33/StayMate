@@ -6,6 +6,6 @@ import org.springframework.stereotype.Repository;
 import com.staymate.entity.Hostel;
 
 @Repository
-public interface HostelRepository extends JpaRepository<Hostel, Long> {
+public interface HostelRepository extends JpaRepository<Hostel, Integer> {
 
 }

@@ -11,10 +11,10 @@ public interface HostelService {
 
     List<Hostel> getAllHostels();
     
-    Hostel getHostelById(Long hostelId);
+    Hostel getHostelById(Integer hostelId);
 
-    Hostel updateHostel(Long hostelId, HostelDTO hostelDTO);
+    Hostel updateHostel(Integer hostelId, HostelDTO hostelDTO);
 
-    void deleteHostel(Long hostelId);
+    void deleteHostel(Integer hostelId);
 
 }

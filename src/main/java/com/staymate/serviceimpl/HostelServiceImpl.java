@@ -40,7 +40,7 @@ public class HostelServiceImpl implements HostelService {
     }
     
     @Override
-    public Hostel getHostelById(Long hostelId) {
+    public Hostel getHostelById(Integer hostelId) {
 
         return hostelRepository.findById(hostelId)
                 .orElseThrow(() ->
@@ -48,7 +48,7 @@ public class HostelServiceImpl implements HostelService {
     }
 
     @Override
-    public Hostel updateHostel(Long hostelId, HostelDTO hostelDTO) {
+    public Hostel updateHostel(Integer hostelId, HostelDTO hostelDTO) {
 
     	Hostel hostel = hostelRepository.findById(hostelId)
     	        .orElseThrow(() -> new ResourceNotFoundException("Hostel not found with ID: "+hostelId));
@@ -69,7 +69,7 @@ public class HostelServiceImpl implements HostelService {
     }
 
     @Override
-    public void deleteHostel(Long hostelId) {
+    public void deleteHostel(Integer hostelId) {
     	Hostel hostel = hostelRepository.findById(hostelId)
                 .orElseThrow(() ->
                         new ResourceNotFoundException("Hostel not found with ID: " + hostelId));

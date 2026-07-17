@@ -27,18 +27,18 @@ public class HostelController {
     }
     
     @GetMapping("/{id}")
-    public Hostel getHostelById(@PathVariable Long id) {
+    public Hostel getHostelById(@PathVariable Integer id) {
         return hostelService.getHostelById(id);
     }
 
     @PutMapping("/{id}")
-    public Hostel updateHostel(@PathVariable Long id,
+    public Hostel updateHostel(@PathVariable Integer id,
                                @RequestBody HostelDTO hostelDTO) {
         return hostelService.updateHostel(id, hostelDTO);
     }
 
     @DeleteMapping("/{id}")
-    public void deleteHostel(@PathVariable Long id) {
+    public void deleteHostel(@PathVariable Integer id) {
         hostelService.deleteHostel(id);
     }
 
