@@ -1,5 +1,9 @@
 package com.staymate.repository;
 
-public interface RoomAllocationRepository {
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import com.staymate.entity.User;
+
+public interface RoomAllocationRepository extends JpaRepository<User, Integer> {
 
 }
