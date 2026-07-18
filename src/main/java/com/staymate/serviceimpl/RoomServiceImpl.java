@@ -64,7 +64,6 @@ public class RoomServiceImpl implements RoomService {
                 .orElseThrow(() ->
                         new ResourceNotFoundException("Hostel not found with ID: " + roomDTO.getHostelId()));
 
-        room.setHostel(hostel);
         room.setRoomNumber(roomDTO.getRoomNumber());
         room.setFloorNumber(roomDTO.getFloorNumber());
         room.setRoomType(roomDTO.getRoomType());

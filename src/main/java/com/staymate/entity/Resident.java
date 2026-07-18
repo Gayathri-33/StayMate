@@ -56,6 +56,4 @@ public class Resident {
     @Column(name = "joining_date", nullable = false)
     private LocalDate joiningDate;
 
-    @Column(name = "profile_image")
-    private String profileImage;
 }

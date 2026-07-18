@@ -1,5 +1,5 @@
 package com.staymate.controller;
 
-public class StudentController {
+public class ResidentController {
 
 }

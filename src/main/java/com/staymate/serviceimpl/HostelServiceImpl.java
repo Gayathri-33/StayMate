@@ -50,22 +50,17 @@ public class HostelServiceImpl implements HostelService {
     @Override
     public Hostel updateHostel(Integer hostelId, HostelDTO hostelDTO) {
 
-    	Hostel hostel = hostelRepository.findById(hostelId)
-    	        .orElseThrow(() -> new ResourceNotFoundException("Hostel not found with ID: "+hostelId));
-        if (hostel != null) {
+        Hostel hostel = hostelRepository.findById(hostelId)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("Hostel not found with ID: " + hostelId));
 
-            hostel.setHostelName(hostelDTO.getHostelName());
-            hostel.setAddress(hostelDTO.getAddress());
-            hostel.setOwnerName(hostelDTO.getOwnerName());
-            hostel.setOwnerPhone(hostelDTO.getOwnerPhone());
-            hostel.setOwnerEmail(hostelDTO.getOwnerEmail());
-            hostel.setTotalRooms(hostelDTO.getTotalRooms());
-            hostel.setTotalCapacity(hostelDTO.getTotalCapacity());
+        hostel.setHostelName(hostelDTO.getHostelName());
+        hostel.setAddress(hostelDTO.getAddress());
+        hostel.setOwnerName(hostelDTO.getOwnerName());
+        hostel.setOwnerPhone(hostelDTO.getOwnerPhone());
+        hostel.setOwnerEmail(hostelDTO.getOwnerEmail());
 
-            return hostelRepository.save(hostel);
-        }
-
-        return null;
+        return hostelRepository.save(hostel);
     }
 
     @Override

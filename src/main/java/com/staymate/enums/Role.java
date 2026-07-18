@@ -2,5 +2,6 @@ package com.staymate.enums;
 
 public enum Role {
 	ADMIN,
-	RESIDENT
+	RESIDENT,
+	SUPER_ADMIN
 }
