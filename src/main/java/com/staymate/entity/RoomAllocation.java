@@ -41,8 +41,8 @@ public class RoomAllocation {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "allocation_status", nullable = false)
-    @Builder.Default
-    private AllocationStatus allocationStatus = AllocationStatus.ACTIVE;
+    //@Builder.Default
+    //private AllocationStatus allocationStatus = AllocationStatus.ACTIVE;
 
     @PrePersist
     public void onCreate() {

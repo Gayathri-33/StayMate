@@ -2,26 +2,25 @@ package com.staymate.serviceimpl;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.staymate.dto.UserDTO;
 import com.staymate.entity.Hostel;
 import com.staymate.entity.User;
-import com.staymate.enums.Status;
 import com.staymate.exception.ResourceNotFoundException;
 import com.staymate.repository.HostelRepository;
 import com.staymate.repository.UserRepository;
 import com.staymate.service.UserService;
 
-import lombok.RequiredArgsConstructor;
-
 @Service
-@RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
-    private final UserRepository userRepository;
+	@Autowired
+	private UserRepository userRepository;
 
-    private final HostelRepository hostelRepository;
+	@Autowired
+	private HostelRepository hostelRepository;
     
     @Override
     public User addUser(UserDTO userDTO) {
@@ -81,9 +80,7 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() ->
                         new ResourceNotFoundException("User not found with ID: " + userId));
 
-        user.setStatus(Status.INACTIVE);
-
-        userRepository.save(user);
+        userRepository.delete(user);
     }
 
 }

@@ -3,7 +3,6 @@ package com.staymate.entity;
 import java.time.LocalDateTime;
 
 import com.staymate.enums.Role;
-import com.staymate.enums.Status;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -55,11 +54,6 @@ public class User {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Role role;
-
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    @Builder.Default
-    private Status status = Status.ACTIVE;
 
     @Column(name = "password_changed", nullable = false)
     @Builder.Default

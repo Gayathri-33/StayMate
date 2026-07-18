@@ -43,8 +43,17 @@ public class Resident {
     @Column(name = "resident_type", nullable = false)
     private ResidentType residentType;
 
+    @Column(length = 100)
+    private String organization;
+
+    @Column(length = 100)
+    private String course;
+    
     @Column
     private Integer year;
+
+    @Column(name = "date_of_birth")
+    private LocalDate dateOfBirth;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
