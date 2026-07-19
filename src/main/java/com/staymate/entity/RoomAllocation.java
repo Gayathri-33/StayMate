@@ -2,52 +2,32 @@ package com.staymate.entity;
 
 import java.time.LocalDate;
 
-import com.staymate.enums.AllocationStatus;
-
-import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
+import lombok.Data;
 
 @Entity
-@Table(name = "room_allocations")
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
+@Table(name = "room_allocation")
+@Data
 public class RoomAllocation {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "allocation_id")
     private Integer allocationId;
 
-    @ManyToOne
-    @JoinColumn(name = "resident_id", nullable = false)
+    @OneToOne
+    @JoinColumn(name = "resident_id", nullable = false, unique = true)
     private Resident resident;
 
     @ManyToOne
     @JoinColumn(name = "room_id", nullable = false)
     private Room room;
 
-    @Column(name = "allocated_date", nullable = false)
     private LocalDate allocatedDate;
-
-    @Column(name = "vacated_date")
-    private LocalDate vacatedDate;
-
-    @Enumerated(EnumType.STRING)
-    @Column(name = "allocation_status", nullable = false)
-    //@Builder.Default
-    //private AllocationStatus allocationStatus = AllocationStatus.ACTIVE;
-
-    @PrePersist
-    public void onCreate() {
-        if (allocatedDate == null) {
-            allocatedDate = LocalDate.now();
-        }
-    }
 }

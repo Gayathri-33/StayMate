@@ -20,7 +20,7 @@ public class HostelController {
     public Hostel addHostel(@RequestBody HostelDTO hostelDTO) {
         return hostelService.addHostel(hostelDTO);
     }
-
+    
     @GetMapping
     public List<Hostel> getAllHostels() {
         return hostelService.getAllHostels();
