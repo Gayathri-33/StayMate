@@ -48,14 +48,4 @@ public class LoginResponseDTO {
 	public void setMessage(String message) {
 		this.message = message;
 	}
-
-	public LoginResponseDTO(Long userId, String fullName, String role, String message) {
-		super();
-		this.userId = userId;
-		this.fullName = fullName;
-		this.role = role;
-		this.message = message;
-	}
-	
-    
 }

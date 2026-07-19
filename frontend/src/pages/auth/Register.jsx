@@ -45,7 +45,7 @@ function Register() {
 
             alert("Registration Successful");
 
-            navigate("/login");
+            navigate("/");
 
         }
 
@@ -156,7 +156,7 @@ function Register() {
 
                     {" "}
 
-                    <Link to="/login">
+                    <Link to="/">
 
                         Login
 
