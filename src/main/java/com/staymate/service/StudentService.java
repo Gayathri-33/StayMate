@@ -2,6 +2,8 @@ package com.staymate.service;
 
 import java.util.List;
 
+import com.staymate.dto.StudentRequestDTO;
+import com.staymate.dto.StudentResponseDTO;
 import com.staymate.entity.Student;
 
 public interface StudentService {
@@ -15,4 +17,10 @@ public interface StudentService {
     Student updateStudent(Integer studentId, Student student);
 
     void deleteStudent(Integer studentId);
+    
+//    StudentResponseDTO createProfile(Long userId, StudentRequestDTO dto);
+//
+//    StudentResponseDTO getProfile(Long userId);
+//
+//    StudentResponseDTO updateProfile(Long userId, StudentRequestDTO dto);
 }

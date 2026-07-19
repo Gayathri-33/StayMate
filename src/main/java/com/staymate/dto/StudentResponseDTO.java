@@ -1,74 +1,75 @@
-package com.staymate.entity;
+package com.staymate.dto;
 
 import java.time.LocalDate;
 
 import com.staymate.enums.Gender;
 
-import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
 
-@Entity
-@Table(name = "students")
-@Getter
-@Setter
-@NoArgsConstructor
+import lombok.NoArgsConstructor;
+
 @AllArgsConstructor
-@Builder
-public class Student {
+@NoArgsConstructor
+public class StudentResponseDTO {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "student_id")
-    private Integer studentId;
+    private Long studentId;
 
-    @OneToOne
-    @JoinColumn(name = "user_id", nullable = false, unique = true)
-    private User user;
+    private String fullName;
 
-    @Column(name = "roll_number", unique = true)
+    private String email;
+
+    private String phone;
+
     private String rollNumber;
 
-    @Column(name = "college_name", nullable = false)
     private String collegeName;
 
-    @Column(nullable = false)
     private String department;
 
-    @Column(nullable = false)
-    private Integer year;
+    private int year;
 
-    @Enumerated(EnumType.STRING)
     private Gender gender;
 
-    @Column(name = "parent_name")
-    private String parentName;
-
-    @Column(name = "parent_phone")
-    private String parentPhone;
-
-    @Column(columnDefinition = "TEXT")
-    private String address;
-
-    @Column(name = "joining_date")
     private LocalDate joiningDate;
 
-    @Column(name = "profile_image")
+    private String parentName;
+
+    private String parentPhone;
+
+    private String address;
+
     private String profileImage;
 
-	public Integer getStudentId() {
+	public Long getStudentId() {
 		return studentId;
 	}
 
-	public void setStudentId(Integer studentId) {
+	public void setStudentId(Long studentId) {
 		this.studentId = studentId;
 	}
 
-	public User getUser() {
-		return user;
+	public String getFullName() {
+		return fullName;
 	}
 
-	public void setUser(User user) {
-		this.user = user;
+	public void setFullName(String fullName) {
+		this.fullName = fullName;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	public String getPhone() {
+		return phone;
+	}
+
+	public void setPhone(String phone) {
+		this.phone = phone;
 	}
 
 	public String getRollNumber() {
@@ -95,14 +96,29 @@ public class Student {
 		this.department = department;
 	}
 
-	public Integer getYear() {
+	public int getYear() {
 		return year;
 	}
 
-	public void setYear(Integer year) {
+	public void setYear(int year) {
 		this.year = year;
 	}
 
+	public Gender getGender() {
+		return gender;
+	}
+
+	public void setGender(Gender gender) {
+		this.gender = gender;
+	}
+
+	public LocalDate getJoiningDate() {
+		return joiningDate;
+	}
+
+	public void setJoiningDate(LocalDate joiningDate) {
+		this.joiningDate = joiningDate;
+	}
 
 	public String getParentName() {
 		return parentName;
@@ -128,14 +144,6 @@ public class Student {
 		this.address = address;
 	}
 
-	public LocalDate getJoiningDate() {
-		return joiningDate;
-	}
-
-	public void setJoiningDate(LocalDate joiningDate) {
-		this.joiningDate = joiningDate;
-	}
-
 	public String getProfileImage() {
 		return profileImage;
 	}
@@ -143,14 +151,6 @@ public class Student {
 	public void setProfileImage(String profileImage) {
 		this.profileImage = profileImage;
 	}
-
-	public Gender getGender() {
-		return gender;
-	}
-
-	public void setGender(Gender gender) {
-		this.gender = gender;
-	}
-
+    
     
 }

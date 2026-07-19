@@ -15,10 +15,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(ResourceNotFoundException.class)
     public ResponseEntity<ErrorResponse> handleNotFound(ResourceNotFoundException ex){
 
-        return new ResponseEntity<ErrorResponse>(new ErrorResponse(
-                        LocalDateTime.now(),
-                        HttpStatus.NOT_FOUND.value(),
-                        ex.getMessage()),
+        return new ResponseEntity<ErrorResponse>(new ErrorResponse(),
                 HttpStatus.NOT_FOUND);
 
     }
@@ -27,10 +24,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> handleCustom(CustomException ex){
 
         return new ResponseEntity<>(
-                new ErrorResponse(
-                        LocalDateTime.now(),
-                        HttpStatus.BAD_REQUEST.value(),
-                        ex.getMessage()),
+                new ErrorResponse(),
                 HttpStatus.BAD_REQUEST);
 
     }
@@ -39,10 +33,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> handleAll(Exception ex){
 
         return new ResponseEntity<>(
-                new ErrorResponse(
-                        LocalDateTime.now(),
-                        HttpStatus.INTERNAL_SERVER_ERROR.value(),
-                        ex.getMessage()),
+                new ErrorResponse(),
                 HttpStatus.INTERNAL_SERVER_ERROR);
 
     }

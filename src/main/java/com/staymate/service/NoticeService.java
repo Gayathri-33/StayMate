@@ -10,12 +10,10 @@ public interface NoticeService {
 
     List<Notice> getAllNotices();
 
-    List<Notice> getActiveNotices();
+    Notice getNoticeById(Integer noticeId);
 
-    Notice getNoticeById(Integer id);
+    Notice updateNotice(Integer noticeId, Notice notice);
 
-    Notice updateNotice(Integer id, Notice notice);
-
-    void deleteNotice(Integer id);
+    void deleteNotice(Integer noticeId);
 
 }

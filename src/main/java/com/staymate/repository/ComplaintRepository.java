@@ -9,7 +9,6 @@ import com.staymate.entity.Complaint;
 import com.staymate.entity.Student;
 import com.staymate.enums.ComplaintCategory;
 import com.staymate.enums.ComplaintStatus;
-import com.staymate.enums.ComplaintStatus;
 
 @Repository
 public interface ComplaintRepository extends JpaRepository<Complaint, Integer> {
@@ -21,4 +20,6 @@ public interface ComplaintRepository extends JpaRepository<Complaint, Integer> {
     List<Complaint> findByCategory(ComplaintCategory category);
 
     long countByStatus(ComplaintStatus status);
+    
+    List<Complaint> findByStudentStudentId(Integer studentId);
 }

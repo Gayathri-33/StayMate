@@ -55,10 +55,12 @@ public class ComplaintServiceImpl implements ComplaintService {
             existingComplaint.setCategory(complaint.getCategory());
             existingComplaint.setComplaintTitle(complaint.getComplaintTitle());
             existingComplaint.setComplaintDescription(complaint.getComplaintDescription());
-            existingComplaint.setStatus(complaint.getStatus());
+            
             existingComplaint.setAdminRemarks(complaint.getAdminRemarks());
 
-            if (complaint.getStatus() == ComplaintStatus.RESOLVED) {
+            if(existingComplaint.getStatus()!=ComplaintStatus.RESOLVED
+                    && complaint.getStatus()==ComplaintStatus.RESOLVED){
+
                 existingComplaint.setResolvedDate(LocalDateTime.now());
             }
 

@@ -10,55 +10,40 @@ import com.staymate.service.NoticeService;
 
 @RestController
 @RequestMapping("/notices")
-@CrossOrigin(origins="*")
+@CrossOrigin(origins = "http://localhost:5173")
 public class NoticeController {
 
     @Autowired
-    private NoticeService service;
+    private NoticeService noticeService;
 
     @PostMapping
-    public Notice saveNotice(@RequestBody Notice notice){
-
-        return service.saveNotice(notice);
-
+    public Notice saveNotice(@RequestBody Notice notice) {
+        return noticeService.saveNotice(notice);
     }
 
     @GetMapping
-    public List<Notice> getAllNotices(){
-
-        return service.getAllNotices();
-
-    }
-
-    @GetMapping("/active")
-    public List<Notice> getActiveNotices(){
-
-        return service.getActiveNotices();
-
+    public List<Notice> getAllNotices() {
+        return noticeService.getAllNotices();
     }
 
     @GetMapping("/{id}")
-    public Notice getNotice(@PathVariable Integer id){
-
-        return service.getNoticeById(id);
-
+    public Notice getNoticeById(@PathVariable Integer id) {
+        return noticeService.getNoticeById(id);
     }
 
     @PutMapping("/{id}")
     public Notice updateNotice(@PathVariable Integer id,
-                               @RequestBody Notice notice){
+                               @RequestBody Notice notice) {
 
-        return service.updateNotice(id,notice);
-
+        return noticeService.updateNotice(id, notice);
     }
 
     @DeleteMapping("/{id}")
-    public String deleteNotice(@PathVariable Integer id){
+    public String deleteNotice(@PathVariable Integer id) {
 
-        service.deleteNotice(id);
+        noticeService.deleteNotice(id);
 
-        return "Notice Deleted Successfully";
-
+        return "Notice deleted successfully";
     }
 
 }

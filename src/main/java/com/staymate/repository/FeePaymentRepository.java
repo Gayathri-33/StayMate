@@ -7,8 +7,6 @@ import org.springframework.stereotype.Repository;
 
 import com.staymate.entity.FeePayment;
 import com.staymate.entity.Student;
-import com.staymate.enums.PaymentStatus;
-import com.staymate.enums.PaymentStatus;
 import org.springframework.data.jpa.repository.Query;
 import com.staymate.enums.PaymentStatus;
 

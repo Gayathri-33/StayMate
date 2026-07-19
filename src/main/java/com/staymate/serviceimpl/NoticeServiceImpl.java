@@ -1,6 +1,5 @@
 package com.staymate.serviceimpl;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -12,64 +11,51 @@ import com.staymate.repository.NoticeRepository;
 import com.staymate.service.NoticeService;
 
 @Service
-public class NoticeServiceImpl implements NoticeService{
+public class NoticeServiceImpl implements NoticeService {
 
     @Autowired
-    private NoticeRepository repository;
+    private NoticeRepository noticeRepository;
 
     @Override
     public Notice saveNotice(Notice notice) {
 
         notice.setPostedDate(LocalDateTime.now());
 
-        return repository.save(notice);
+        return noticeRepository.save(notice);
     }
 
     @Override
     public List<Notice> getAllNotices() {
-
-        return repository.findAll();
-
+        return noticeRepository.findAll();
     }
 
     @Override
-    public List<Notice> getActiveNotices() {
-
-        return repository.findByExpiryDateGreaterThanEqual(LocalDate.now());
-
+    public Notice getNoticeById(Integer noticeId) {
+        return noticeRepository.findById(noticeId).orElse(null);
     }
 
     @Override
-    public Notice getNoticeById(Integer id) {
+    public Notice updateNotice(Integer noticeId, Notice notice) {
 
-        return repository.findById(id).orElse(null);
+        Notice existingNotice =
+                noticeRepository.findById(noticeId).orElse(null);
 
-    }
+        if(existingNotice != null) {
 
-    @Override
-    public Notice updateNotice(Integer id, Notice notice) {
+            existingNotice.setTitle(notice.getTitle());
+            existingNotice.setDescription(notice.getDescription());
+            existingNotice.setExpiryDate(notice.getExpiryDate());
+            existingNotice.setPostedBy(notice.getPostedBy());
 
-        Notice existing=repository.findById(id).orElse(null);
-
-        if(existing!=null){
-
-            existing.setTitle(notice.getTitle());
-            existing.setDescription(notice.getDescription());
-            existing.setExpiryDate(notice.getExpiryDate());
-            existing.setPostedBy(notice.getPostedBy());
-
-            return repository.save(existing);
-
+            return noticeRepository.save(existingNotice);
         }
 
         return null;
     }
 
     @Override
-    public void deleteNotice(Integer id) {
-
-        repository.deleteById(id);
-
+    public void deleteNotice(Integer noticeId) {
+        noticeRepository.deleteById(noticeId);
     }
 
 }

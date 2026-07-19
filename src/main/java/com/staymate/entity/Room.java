@@ -22,7 +22,7 @@ public class Room {
     @JoinColumn(name = "hostel_id", nullable = false)
     private Hostel hostel;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique=true)
     private String roomNumber;
 
     private Integer floorNumber;
