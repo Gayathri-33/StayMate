@@ -66,7 +66,7 @@ public class AuthServiceImpl implements AuthService {
             throw new RuntimeException("Invalid Password");
         }
 
-        return new LoginResponseDTO(user.getUserId(),user.getFullName(),user.getRole().name(),"Login Successful");
+        return new LoginResponseDTO();
     }
 
 }
