@@ -1,0 +1,759 @@
+.resident-dashboard-page {
+    display: grid;
+    gap: 23px;
+}
+
+/* Welcome banner */
+
+.resident-dashboard-banner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 30px;
+    min-height: 210px;
+    padding: 34px 37px;
+    overflow: hidden;
+    border-radius: 23px;
+    color: white;
+    background:
+        linear-gradient(
+            135deg,
+            var(--staymate-primary-dark),
+            var(--staymate-primary) 62%,
+            var(--staymate-secondary-dark)
+        );
+    box-shadow:
+        0 16px 38px rgba(35, 74, 99, 0.17);
+}
+
+.resident-dashboard-banner-content {
+    max-width: 700px;
+}
+
+.resident-dashboard-label {
+    display: inline-block;
+    padding: 7px 12px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 20px;
+    color: #dcebe6;
+    background: rgba(255, 255, 255, 0.08);
+    font-size: 9px;
+    font-weight: 750;
+    letter-spacing: 0.7px;
+    text-transform: uppercase;
+}
+
+.resident-dashboard-banner h2 {
+    margin: 14px 0 8px;
+    font-size: 30px;
+    letter-spacing: -0.8px;
+}
+
+.resident-dashboard-banner h2 span {
+    font-size: 24px;
+}
+
+.resident-dashboard-banner-content > p {
+    margin: 0;
+    color: rgba(255, 255, 255, 0.68);
+    font-size: 12px;
+    line-height: 1.7;
+}
+
+.resident-dashboard-banner-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 22px;
+}
+
+.resident-dashboard-banner-actions button {
+    min-height: 42px;
+    padding: 9px 14px;
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    border-radius: 10px;
+    color: white;
+    background: rgba(255, 255, 255, 0.08);
+    font-size: 10px;
+    font-weight: 700;
+}
+
+.resident-dashboard-banner-actions button:first-child {
+    color: var(--staymate-primary-dark);
+    background: var(--staymate-secondary-light);
+}
+
+.resident-dashboard-banner-actions button:hover {
+    color: var(--staymate-primary-dark);
+    background: white;
+}
+
+.resident-dashboard-banner-actions span {
+    margin-left: 6px;
+}
+
+.resident-dashboard-room-card {
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+    flex-direction: column;
+    justify-content: center;
+    width: 160px;
+    height: 145px;
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    border-radius: 23px;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+}
+
+.dashboard-room-label {
+    color: rgba(255, 255, 255, 0.55);
+    font-size: 8px;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+}
+
+.resident-dashboard-room-card > strong {
+    margin: 4px 0;
+    font-size: 38px;
+}
+
+.resident-dashboard-room-card > p {
+    margin: 0;
+    color: rgba(255, 255, 255, 0.68);
+    font-size: 9px;
+}
+
+.dashboard-room-status {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    margin-top: 10px;
+    padding: 5px 8px;
+    border-radius: 13px;
+    color: #dcf0e9;
+    background: rgba(220, 240, 233, 0.1);
+    font-size: 7px;
+    font-weight: 700;
+}
+
+.dashboard-room-status i {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #bfe0d5;
+}
+
+/* Summary cards */
+
+.resident-dashboard-summary {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 14px;
+}
+
+.resident-dashboard-summary article {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-height: 92px;
+    padding: 16px;
+    border: 1px solid var(--staymate-border);
+    border-radius: 15px;
+    background: white;
+    box-shadow:
+        0 7px 19px rgba(30, 67, 84, 0.05);
+    transition:
+        box-shadow 0.2s ease,
+        transform 0.2s ease;
+}
+
+.resident-dashboard-summary article:hover {
+    box-shadow:
+        0 11px 26px rgba(30, 67, 84, 0.09);
+    transform: translateY(-2px);
+}
+
+.dashboard-summary-icon {
+    display: grid;
+    flex-shrink: 0;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 13px;
+    color: var(--staymate-primary);
+    background: var(--staymate-secondary-light);
+}
+
+.dashboard-summary-icon svg {
+    width: 24px;
+    height: 24px;
+}
+
+.resident-dashboard-summary article p {
+    margin: 0 0 4px;
+    color: var(--staymate-text-light);
+    font-size: 9px;
+}
+
+.resident-dashboard-summary article h3 {
+    margin: 0;
+    color: var(--staymate-primary-dark);
+    font-size: 17px;
+}
+
+.resident-dashboard-summary article small {
+    display: block;
+    margin-top: 4px;
+    color: #91a0a7;
+    font-size: 7px;
+}
+
+/* Shared headings and cards */
+
+.resident-dashboard-section {
+    padding: 23px;
+    border: 1px solid var(--staymate-border);
+    border-radius: 18px;
+    background: white;
+    box-shadow:
+        0 7px 20px rgba(30, 67, 84, 0.05);
+}
+
+.resident-dashboard-card {
+    padding: 22px;
+    border: 1px solid var(--staymate-border);
+    border-radius: 17px;
+    background: white;
+    box-shadow:
+        0 7px 20px rgba(30, 67, 84, 0.05);
+}
+
+.resident-dashboard-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+}
+
+.resident-dashboard-heading h2 {
+    margin: 0;
+    color: var(--staymate-primary-dark);
+    font-size: 16px;
+}
+
+.resident-dashboard-heading p {
+    margin: 4px 0 0;
+    color: var(--staymate-text-light);
+    font-size: 9px;
+}
+
+.resident-dashboard-heading > button {
+    padding: 6px 9px;
+    border: none;
+    color: var(--staymate-primary);
+    background: transparent;
+    font-size: 9px;
+    font-weight: 750;
+}
+
+/* Quick actions */
+
+.resident-quick-actions-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 11px;
+    margin-top: 18px;
+}
+
+.resident-quick-action {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-height: 70px;
+    padding: 12px;
+    border: 1px solid var(--staymate-border);
+    border-radius: 12px;
+    color: var(--staymate-text);
+    background: #fbfcfc;
+    text-align: left;
+    transition:
+        border-color 0.2s ease,
+        background-color 0.2s ease,
+        box-shadow 0.2s ease,
+        transform 0.2s ease;
+}
+
+.resident-quick-action:hover {
+    border-color: var(--staymate-secondary);
+    background: #f3f8f6;
+    box-shadow:
+        0 7px 17px rgba(30, 67, 84, 0.07);
+    transform: translateY(-2px);
+}
+
+.resident-quick-action-icon {
+    display: grid;
+    flex-shrink: 0;
+    place-items: center;
+    width: 38px;
+    height: 38px;
+    border-radius: 11px;
+    color: var(--staymate-primary);
+    background: var(--staymate-secondary-light);
+}
+
+.resident-quick-action-icon svg {
+    width: 21px;
+    height: 21px;
+}
+
+.resident-quick-action > div {
+    flex: 1;
+    min-width: 0;
+}
+
+.resident-quick-action h3 {
+    margin: 0 0 3px;
+    color: var(--staymate-primary-dark);
+    font-size: 10px;
+}
+
+.resident-quick-action p {
+    margin: 0;
+    color: var(--staymate-text-light);
+    font-size: 7px;
+}
+
+.resident-action-arrow {
+    color: var(--staymate-secondary-dark);
+    font-size: 15px;
+}
+
+/* Middle section */
+
+.resident-dashboard-middle-grid {
+    display: grid;
+    grid-template-columns: 1.15fr 0.85fr;
+    gap: 18px;
+}
+
+/* Menu */
+
+.resident-today-menu-list {
+    display: grid;
+    gap: 9px;
+    margin-top: 17px;
+}
+
+.resident-menu-item {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    padding: 10px;
+    border-radius: 11px;
+    background: #f7faf8;
+}
+
+.resident-menu-icon {
+    display: grid;
+    flex-shrink: 0;
+    place-items: center;
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
+    color: var(--staymate-primary);
+    background: var(--staymate-secondary-light);
+}
+
+.resident-menu-icon svg {
+    width: 21px;
+    height: 21px;
+}
+
+.resident-menu-information {
+    flex: 1;
+}
+
+.resident-menu-information > div {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.resident-menu-information h3 {
+    margin: 0;
+    color: var(--staymate-primary-dark);
+    font-size: 10px;
+}
+
+.resident-menu-information span {
+    color: var(--staymate-text-light);
+    font-size: 7px;
+}
+
+.resident-menu-information p {
+    margin: 4px 0 0;
+    color: var(--staymate-text-light);
+    font-size: 8px;
+}
+
+/* Fees */
+
+.resident-fee-pending-label {
+    padding: 5px 8px;
+    border-radius: 13px;
+    color: #886520;
+    background: #faefd3;
+    font-size: 7px;
+    font-weight: 750;
+}
+
+.resident-fee-amount {
+    margin-top: 18px;
+    padding: 19px;
+    border-radius: 13px;
+    background:
+        linear-gradient(
+            145deg,
+            #edf5f2,
+            var(--staymate-secondary-light)
+        );
+}
+
+.resident-fee-amount > span {
+    color: var(--staymate-text-light);
+    font-size: 8px;
+    text-transform: uppercase;
+}
+
+.resident-fee-amount h3 {
+    margin: 5px 0 3px;
+    color: var(--staymate-primary-dark);
+    font-size: 29px;
+}
+
+.resident-fee-amount p {
+    margin: 0;
+    color: var(--staymate-text-light);
+    font-size: 8px;
+}
+
+.resident-fee-details {
+    display: grid;
+    gap: 9px;
+    margin-top: 14px;
+}
+
+.resident-fee-details > div {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: 9px;
+    border-bottom: 1px solid #edf1ef;
+}
+
+.resident-fee-details span {
+    color: var(--staymate-text-light);
+    font-size: 8px;
+}
+
+.resident-fee-details strong {
+    color: var(--staymate-text);
+    font-size: 9px;
+}
+
+.resident-fee-details .fee-status-pending {
+    color: #896522;
+}
+
+.resident-pay-fee-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    min-height: 43px;
+    margin-top: 15px;
+    border: none;
+    border-radius: 10px;
+    color: white;
+    background: var(--staymate-primary);
+    font-size: 10px;
+    font-weight: 750;
+}
+
+.resident-pay-fee-button:hover {
+    background: var(--staymate-primary-dark);
+}
+
+/* Bottom grid */
+
+.resident-dashboard-bottom-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 18px;
+}
+
+/* Activities */
+
+.resident-activity-list,
+.resident-notice-list {
+    display: grid;
+    gap: 9px;
+    margin-top: 17px;
+}
+
+.resident-activity-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 0;
+    border-bottom: 1px solid #edf1ef;
+}
+
+.resident-activity-item:last-child {
+    border-bottom: none;
+}
+
+.resident-activity-icon {
+    display: grid;
+    flex-shrink: 0;
+    place-items: center;
+    width: 37px;
+    height: 37px;
+    border-radius: 10px;
+    color: var(--staymate-primary);
+    background: var(--staymate-secondary-light);
+}
+
+.resident-activity-icon svg {
+    width: 20px;
+    height: 20px;
+}
+
+.resident-activity-item > div {
+    flex: 1;
+}
+
+.resident-activity-item h3 {
+    margin: 0 0 3px;
+    color: var(--staymate-primary-dark);
+    font-size: 9px;
+}
+
+.resident-activity-item p {
+    margin: 0;
+    color: var(--staymate-text-light);
+    font-size: 7px;
+}
+
+.resident-activity-item time {
+    color: #95a2a8;
+    font-size: 7px;
+    white-space: nowrap;
+}
+
+/* Notices */
+
+.resident-notice-count {
+    display: grid;
+    width: 24px;
+    height: 24px;
+    place-items: center;
+    border-radius: 8px;
+    color: var(--staymate-primary);
+    background: var(--staymate-secondary-light);
+    font-size: 8px;
+    font-weight: 800;
+}
+
+.resident-notice-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 11px;
+    padding: 10px;
+    border-radius: 11px;
+    background: #f7faf8;
+}
+
+.resident-notice-date {
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+    flex-direction: column;
+    justify-content: center;
+    width: 41px;
+    height: 43px;
+    border-radius: 10px;
+    color: white;
+    background: var(--staymate-primary);
+}
+
+.resident-notice-date span {
+    font-size: 14px;
+    font-weight: 800;
+}
+
+.resident-notice-date small {
+    font-size: 7px;
+    text-transform: uppercase;
+}
+
+.resident-notice-information > span {
+    color: var(--staymate-secondary-dark);
+    font-size: 7px;
+    font-weight: 750;
+    text-transform: uppercase;
+}
+
+.resident-notice-information h3 {
+    margin: 3px 0;
+    color: var(--staymate-primary-dark);
+    font-size: 9px;
+}
+
+.resident-notice-information p {
+    margin: 0;
+    color: var(--staymate-text-light);
+    font-size: 7px;
+    line-height: 1.5;
+}
+
+/* Hostel information */
+
+.resident-hostel-information {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 19px 22px;
+    border: 1px solid var(--staymate-border);
+    border-radius: 16px;
+    background: white;
+    box-shadow:
+        0 7px 20px rgba(30, 67, 84, 0.05);
+}
+
+.resident-hostel-information-icon {
+    display: grid;
+    flex-shrink: 0;
+    width: 47px;
+    height: 47px;
+    place-items: center;
+    border-radius: 13px;
+    color: var(--staymate-primary);
+    background: var(--staymate-secondary-light);
+}
+
+.resident-hostel-information-icon svg {
+    width: 27px;
+    height: 27px;
+}
+
+.resident-hostel-information > div {
+    flex: 1;
+}
+
+.resident-hostel-information > div > span {
+    color: var(--staymate-text-light);
+    font-size: 7px;
+    text-transform: uppercase;
+}
+
+.resident-hostel-information h2 {
+    margin: 3px 0;
+    color: var(--staymate-primary-dark);
+    font-size: 13px;
+}
+
+.resident-hostel-information p {
+    margin: 0;
+    color: var(--staymate-text-light);
+    font-size: 8px;
+}
+
+.resident-hostel-information > button {
+    padding: 8px 12px;
+    border: 1px solid var(--staymate-border);
+    border-radius: 9px;
+    color: var(--staymate-primary);
+    background: white;
+    font-size: 9px;
+    font-weight: 700;
+}
+
+.resident-hostel-information > button:hover {
+    border-color: var(--staymate-secondary);
+    background: var(--staymate-secondary-light);
+}
+
+/* Responsive */
+
+@media (max-width: 1150px) {
+    .resident-dashboard-summary,
+    .resident-quick-actions-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 950px) {
+    .resident-dashboard-middle-grid,
+    .resident-dashboard-bottom-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 650px) {
+    .resident-dashboard-banner {
+        min-height: auto;
+        padding: 27px 22px;
+    }
+
+    .resident-dashboard-banner h2 {
+        font-size: 24px;
+    }
+
+    .resident-dashboard-room-card {
+        width: 115px;
+        height: 110px;
+    }
+
+    .resident-dashboard-room-card > strong {
+        font-size: 29px;
+    }
+
+    .resident-dashboard-summary {
+        grid-template-columns: 1fr;
+    }
+
+    .resident-quick-actions-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .resident-dashboard-section,
+    .resident-dashboard-card {
+        padding: 18px;
+    }
+}
+
+@media (max-width: 430px) {
+    .resident-dashboard-room-card {
+        display: none;
+    }
+
+    .resident-dashboard-banner-actions {
+        flex-direction: column;
+    }
+
+    .resident-dashboard-banner-actions button {
+        width: 100%;
+    }
+
+    .resident-activity-item time {
+        display: none;
+    }
+
+    .resident-hostel-information > button {
+        display: none;
+    }
+}

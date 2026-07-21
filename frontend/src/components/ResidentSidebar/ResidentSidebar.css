@@ -1,0 +1,337 @@
+.resident-sidebar {
+    position: fixed;
+    z-index: 100;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    display: flex;
+    flex-direction: column;
+    width: 270px;
+    padding: 23px 16px 18px;
+    color: white;
+    background:
+        linear-gradient(
+            180deg,
+            var(--staymate-primary-dark) 0%,
+            var(--staymate-primary) 65%,
+            #315e68 100%
+        );
+    box-shadow: 8px 0 30px rgba(24, 56, 77, 0.13);
+}
+
+/* Brand */
+
+.resident-sidebar-brand {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    padding: 0 8px 22px;
+}
+
+.resident-sidebar-logo {
+    display: grid;
+    flex-shrink: 0;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 13px;
+    color: var(--staymate-primary-dark);
+    background: var(--staymate-secondary-light);
+    box-shadow: 0 8px 18px rgba(10, 31, 43, 0.18);
+}
+
+.resident-sidebar-logo svg {
+    width: 26px;
+    height: 26px;
+}
+
+.resident-sidebar-brand-text {
+    flex: 1;
+}
+
+.resident-sidebar-brand-text h2 {
+    margin: 0;
+    font-size: 21px;
+    letter-spacing: -0.4px;
+}
+
+.resident-sidebar-brand-text p {
+    margin: 3px 0 0;
+    color: rgba(255, 255, 255, 0.62);
+    font-size: 9px;
+    font-weight: 650;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+}
+
+.resident-sidebar-close {
+    display: none;
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    border: none;
+    border-radius: 9px;
+    color: white;
+    background: rgba(255, 255, 255, 0.08);
+    font-size: 22px;
+}
+
+/* Hostel information */
+
+.resident-hostel-card {
+    display: flex;
+    align-items: flex-start;
+    gap: 11px;
+    margin: 0 3px 22px;
+    padding: 14px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 14px;
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.resident-hostel-icon {
+    display: grid;
+    flex-shrink: 0;
+    place-items: center;
+    width: 38px;
+    height: 38px;
+    border-radius: 11px;
+    color: #dcebe6;
+    background: rgba(255, 255, 255, 0.11);
+}
+
+.resident-hostel-icon svg {
+    width: 22px;
+    height: 22px;
+}
+
+.resident-hostel-card > div {
+    min-width: 0;
+}
+
+.resident-hostel-card p {
+    margin: 0 0 4px;
+    color: rgba(255, 255, 255, 0.53);
+    font-size: 8px;
+    letter-spacing: 0.4px;
+    text-transform: uppercase;
+}
+
+.resident-hostel-card h3 {
+    max-width: 165px;
+    margin: 0 0 7px;
+    overflow: hidden;
+    color: white;
+    font-size: 11px;
+    font-weight: 650;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.resident-room-label {
+    display: inline-block;
+    padding: 4px 8px;
+    border-radius: 12px;
+    color: #d9ebe5;
+    background: rgba(220, 235, 230, 0.12);
+    font-size: 8px;
+    font-weight: 700;
+}
+
+/* Navigation */
+
+.resident-sidebar-navigation {
+    flex: 1;
+    overflow-y: auto;
+    padding: 0 3px;
+}
+
+.resident-sidebar-navigation::-webkit-scrollbar {
+    width: 4px;
+}
+
+.resident-sidebar-navigation::-webkit-scrollbar-thumb {
+    border-radius: 5px;
+    background: rgba(255, 255, 255, 0.16);
+}
+
+.resident-navigation-heading {
+    margin: 0 10px 9px;
+    color: rgba(255, 255, 255, 0.42);
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.9px;
+    text-transform: uppercase;
+}
+
+.resident-nav-link {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-height: 44px;
+    margin-bottom: 3px;
+    padding: 9px 12px;
+    border-radius: 10px;
+    color: rgba(255, 255, 255, 0.71);
+    font-size: 12px;
+    font-weight: 550;
+    text-decoration: none;
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease,
+        transform 0.2s ease;
+}
+
+.resident-nav-link:hover {
+    color: white;
+    background: rgba(255, 255, 255, 0.09);
+    transform: translateX(2px);
+}
+
+.resident-nav-active {
+    color: var(--staymate-primary-dark);
+    background: var(--staymate-secondary-light);
+    font-weight: 700;
+}
+
+.resident-nav-active:hover {
+    color: var(--staymate-primary-dark);
+    background: var(--staymate-secondary-light);
+    transform: none;
+}
+
+.resident-nav-icon {
+    display: grid;
+    flex-shrink: 0;
+    place-items: center;
+    width: 24px;
+    height: 24px;
+}
+
+.resident-nav-icon svg {
+    width: 20px;
+    height: 20px;
+}
+
+.resident-nav-name {
+    line-height: 1.3;
+}
+
+/* Sidebar footer */
+
+.resident-sidebar-footer {
+    padding: 14px 3px 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.resident-sidebar-user {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+    padding: 5px 8px;
+}
+
+.resident-user-avatar {
+    display: grid;
+    flex-shrink: 0;
+    place-items: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    color: var(--staymate-primary-dark);
+    background: var(--staymate-secondary-light);
+    font-size: 13px;
+    font-weight: 800;
+}
+
+.resident-sidebar-user > div {
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+}
+
+.resident-sidebar-user strong {
+    max-width: 165px;
+    overflow: hidden;
+    color: white;
+    font-size: 11px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.resident-sidebar-user small {
+    margin-top: 3px;
+    color: rgba(255, 255, 255, 0.52);
+    font-size: 8px;
+    text-transform: uppercase;
+}
+
+.resident-logout-button {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    min-height: 42px;
+    padding: 9px 12px;
+    border: none;
+    border-radius: 10px;
+    color: #f2dede;
+    background: transparent;
+    font-size: 12px;
+    font-weight: 650;
+    text-align: left;
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+}
+
+.resident-logout-button:hover {
+    color: white;
+    background: rgba(255, 255, 255, 0.09);
+}
+
+.resident-logout-button svg {
+    width: 20px;
+    height: 20px;
+}
+
+/* Mobile overlay */
+
+.resident-sidebar-overlay {
+    display: none;
+}
+
+/* Responsive */
+
+@media (max-width: 900px) {
+    .resident-sidebar {
+        transform: translateX(-100%);
+        transition: transform 0.25s ease;
+    }
+
+    .resident-sidebar-open {
+        transform: translateX(0);
+    }
+
+    .resident-sidebar-close {
+        display: grid;
+        place-items: center;
+    }
+
+    .resident-sidebar-overlay {
+        position: fixed;
+        z-index: 90;
+        inset: 0;
+        display: block;
+        border: none;
+        background: rgba(14, 31, 42, 0.48);
+        backdrop-filter: blur(2px);
+    }
+}
+
+@media (max-width: 380px) {
+    .resident-sidebar {
+        width: 255px;
+    }
+}
