@@ -1,35 +1,45 @@
 package com.staymate.serviceimpl;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.staymate.dto.LoginDTO;
+import com.staymate.dto.LoginResponseDTO;
 import com.staymate.entity.User;
+import com.staymate.enums.Status;
+import com.staymate.exception.InvalidRequestException;
+import com.staymate.exception.ResourceNotFoundException;
 import com.staymate.repository.UserRepository;
 import com.staymate.service.AuthService;
 
+import lombok.RequiredArgsConstructor;
+
 @Service
+@RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService {
 
-    @Autowired
-    private UserRepository userRepository;
-
+    private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
+	
     @Override
-    public String login(LoginDTO loginDTO) {
+    public LoginResponseDTO login(LoginDTO dto) {
 
-        User user = userRepository.findByEmail(loginDTO.getEmail())
-                .orElse(null);
+        User user = userRepository.findByEmail(dto.getEmail())
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("Invalid email or password"));
 
-        if (user == null) {
-            return "User Not Found";
+        if (!passwordEncoder.matches(dto.getPassword(), user.getPassword())) {
+            throw new ResourceNotFoundException("Invalid email or password");
         }
 
-        if (!user.getPassword().equals(loginDTO.getPassword())) {
-            return "Invalid Password";
+        if (user.getStatus() != Status.ACTIVE) {
+            throw new InvalidRequestException("Your account is awaiting admin approval.");
         }
 
-        return "Login Successful";
-
+        return LoginResponseDTO.builder()
+                .message("Login successful")
+                .role(user.getRole().name())
+                .build();
     }
 
 }

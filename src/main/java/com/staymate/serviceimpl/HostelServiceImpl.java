@@ -13,6 +13,7 @@ import com.staymate.service.HostelService;
 import com.staymate.util.HostelCodeGenerator;
 import com.staymate.entity.Hostel;
 import com.staymate.entity.User;
+import com.staymate.exception.ResourceNotFoundException;
 
 @Service
 public class HostelServiceImpl implements HostelService {
@@ -43,7 +44,7 @@ public class HostelServiceImpl implements HostelService {
 
 	    // Temporary: Replace with logged-in admin after JWT
 	    User admin = userRepository.findById(1L)
-	            .orElseThrow(() -> new RuntimeException("Admin not found"));
+	            .orElseThrow(() -> new ResourceNotFoundException("Admin not found"));
 
 	    long nextSequence = hostelRepository.count() + 1;
 
@@ -89,7 +90,7 @@ public class HostelServiceImpl implements HostelService {
 	public HostelResponseDTO getHostelById(Long hostelId) {
 
 	    Hostel hostel = hostelRepository.findById(hostelId)
-	            .orElseThrow(() -> new RuntimeException("Hostel not found"));
+	            .orElseThrow(() -> new ResourceNotFoundException("Hostel not found"));
 
 	    return HostelResponseDTO.builder()
 	            .hostelId(hostel.getHostelId())
@@ -106,7 +107,7 @@ public class HostelServiceImpl implements HostelService {
 	public String updateHostel(Long hostelId, HostelAddDTO hostelAddDTO) {
 
 	    Hostel hostel = hostelRepository.findById(hostelId)
-	            .orElseThrow(() -> new RuntimeException("Hostel not found"));
+	            .orElseThrow(() -> new ResourceNotFoundException("Hostel not found"));
 
 	    hostel.setHostelName(hostelAddDTO.getHostelName());
 	    hostel.setHostelAddress(hostelAddDTO.getHostelAddress());

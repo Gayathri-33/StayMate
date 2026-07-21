@@ -1,24 +1,26 @@
 package com.staymate.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.staymate.dto.LoginDTO;
+import com.staymate.dto.LoginResponseDTO;
 import com.staymate.service.AuthService;
 
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+
 @RestController
-@RequestMapping("/auth")
-@CrossOrigin(origins = "http://localhost:5173")
+@RequestMapping("/api/auth")
+@RequiredArgsConstructor
 public class AuthController {
 
-    @Autowired
-    private AuthService authService;
+    private final AuthService authService;
 
     @PostMapping("/login")
-    public String login(@RequestBody LoginDTO loginDTO) {
+    public ResponseEntity<LoginResponseDTO> login(
+            @Valid @RequestBody LoginDTO dto) {
 
-        return authService.login(loginDTO);
-
+        return ResponseEntity.ok(authService.login(dto));
     }
-
 }

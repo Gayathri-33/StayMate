@@ -1,13 +1,17 @@
 package com.staymate.serviceimpl;
 
-import java.time.LocalDateTime;
-
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.staymate.dto.ResidentRegisterRequestDTO;
+import com.staymate.entity.Hostel;
 import com.staymate.entity.User;
 import com.staymate.enums.Role;
 import com.staymate.enums.Status;
+import com.staymate.exception.ResourceAlreadyExistsException;
+import com.staymate.exception.ResourceNotFoundException;
+import com.staymate.repository.HostelRepository;
 import com.staymate.repository.UserRepository;
 import com.staymate.service.UserService;
 
@@ -16,26 +20,38 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
-
+	
+	@Autowired
     private final UserRepository userRepository;
 
-    @Override
-    public String registerResident(ResidentRegisterRequestDTO request) {
+	@Autowired
+    private final HostelRepository hostelRepository;
+	
+	@Autowired
+    private final PasswordEncoder passwordEncoder;
 
-        // TODO: Validate hostel code once Hostel module is available
+    
+    @Override
+    public String registerResident(ResidentRegisterRequestDTO dto) {
+
+        if (userRepository.findByEmail(dto.getEmail()).isPresent()) {
+            throw new ResourceAlreadyExistsException("Email already exists");
+        }
+
+        Hostel hostel = hostelRepository.findByHostelCode(dto.getHostelCode())
+                .orElseThrow(() -> new ResourceNotFoundException("Invalid hostel code"));
 
         User user = User.builder()
-                .fullName(request.getFullName())
-                .email(request.getEmail())
-                .phone(request.getPhone())
-                .password(request.getPassword()) // Encrypt later with BCrypt
-                .role(Role.STUDENT)
+                .fullName(dto.getFullName())
+                .email(dto.getEmail())
+                .phone(dto.getPhone())
+                .password(passwordEncoder.encode(dto.getPassword()))                .role(Role.STUDENT)
                 .status(Status.PENDING)
-                .createdAt(LocalDateTime.now())
+                .hostel(hostel)
                 .build();
 
         userRepository.save(user);
 
-        return "Registration request submitted successfully. Awaiting admin approval.";
+        return "Registration request submitted successfully.";
     }
 }
