@@ -3,6 +3,7 @@ package com.staymate.enums;
 public enum Status {
 
     ACTIVE,
-    INACTIVE
+    INACTIVE,
+    PENDING
 
 }
