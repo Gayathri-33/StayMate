@@ -6,14 +6,11 @@ import com.staymate.enums.Role;
 import com.staymate.enums.Status;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Entity
 @Table(name = "users")
+
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -21,16 +18,15 @@ public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "user_id")
     private Long userId;
 
-    @Column(name = "full_name", nullable = false, length = 100)
+    @Column(nullable = false)
     private String fullName;
 
-    @Column(nullable = false, unique = true, length = 100)
+    @Column(nullable = false, unique = true)
     private String email;
 
-    @Column(unique = true, length = 15)
+    @Column(nullable = false)
     private String phone;
 
     @Column(nullable = false)
@@ -42,13 +38,12 @@ public class User {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private Status status = Status.ACTIVE;
+    private Status status;
 
-    @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
 
     @PrePersist
-    public void onCreate() {
+    public void prePersist() {
         createdAt = LocalDateTime.now();
     }
 
@@ -115,5 +110,6 @@ public class User {
 	public void setCreatedAt(LocalDateTime createdAt) {
 		this.createdAt = createdAt;
 	}
+
     
 }
