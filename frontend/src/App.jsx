@@ -1,53 +1,51 @@
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import {
+    Navigate,
+    Route,
+    Routes
+} from "react-router-dom";
 
-import Login from "./pages/Login";
-import Dashboard from "./pages/superadmin/Dashboard";
-import AdminList from "./pages/superadmin/AdminList";
-import AddAdmin from "./pages/superadmin/AddAdmin";
-import PrivateRoute from "./routes/PrivateRoute";
+import Home from "./pages/Home/Home";
+import Login from "./pages/Login/Login";
+import Register from "./pages/Register/Register";
+import ResidentRegister from "./pages/Register/ResidentRegister";
+import AdminRegister from "./pages/Register/AdminRegister";
 
 function App() {
-  return (
-    <BrowserRouter>
-      <Routes>
+    return (
+        <Routes>
 
-        {/* Default Route */}
-        <Route path="/" element={<Navigate to="/login" />} />
+            <Route
+                path="/"
+                element={<Home />}
+            />
 
-        {/* Login */}
-        <Route path="/login" element={<Login />} />
+            <Route
+                path="/login"
+                element={<Login />}
+            />
 
-        {/* Protected Routes */}
-        <Route
-          path="/superadmin/dashboard"
-          element={
-            <PrivateRoute>
-              <Dashboard />
-            </PrivateRoute>
-          }
-        />
+            <Route
+                path="/register"
+                element={<Register />}
+            />
 
-        <Route
-          path="/superadmin/admins"
-          element={
-            <PrivateRoute>
-              <AdminList />
-            </PrivateRoute>
-          }
-        />
+            <Route
+                path="/register/resident"
+                element={<ResidentRegister />}
+            />
 
-        <Route
-          path="/superadmin/add-admin"
-          element={
-            <PrivateRoute>
-              <AddAdmin />
-            </PrivateRoute>
-          }
-        />
+            <Route
+                path="/register/admin"
+                element={<AdminRegister />}
+            />
 
-      </Routes>
-    </BrowserRouter>
-  );
+            <Route
+                path="*"
+                element={<Navigate to="/" replace />}
+            />
+
+        </Routes>
+    );
 }
 
 export default App;
