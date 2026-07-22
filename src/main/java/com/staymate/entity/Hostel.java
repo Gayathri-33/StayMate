@@ -36,6 +36,9 @@ public class Hostel {
     @ManyToOne
     @JoinColumn(name = "admin_id")
     private User admin;
+    
+    @Column(name = "block_name", nullable = true)  // Make it nullable
+    private String blockName;
 
     // getters/setters
     public Long getHostelId() { return hostelId; }
@@ -62,4 +65,11 @@ public class Hostel {
     public void setQrImagePath(String qrImagePath) { this.qrImagePath = qrImagePath; }
     public User getAdmin() { return admin; }
     public void setAdmin(User admin) { this.admin = admin; }
+    public String getBlockName() {
+        return blockName;
+    }
+
+    public void setBlockName(String blockName) {
+        this.blockName = blockName;
+    }
 }

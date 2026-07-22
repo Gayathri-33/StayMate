@@ -8,7 +8,8 @@ public class HostelRegisterRequest {
     private Double feeAmount;
     private String feeCycle; // MONTHLY, YEARLY
     private Integer paymentBufferDays;
-
+    private String blockName;
+    
     public String getHostelName() { return hostelName; }
     public void setHostelName(String hostelName) { this.hostelName = hostelName; }
     public String getPlace() { return place; }
@@ -23,4 +24,11 @@ public class HostelRegisterRequest {
     public void setFeeCycle(String feeCycle) { this.feeCycle = feeCycle; }
     public Integer getPaymentBufferDays() { return paymentBufferDays; }
     public void setPaymentBufferDays(Integer paymentBufferDays) { this.paymentBufferDays = paymentBufferDays; }
+	public String getBlockName() {
+		return blockName;
+	}
+	public void setBlockName(String blockName) {
+		this.blockName = blockName;
+	}
+    
 }

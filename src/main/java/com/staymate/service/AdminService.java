@@ -59,7 +59,7 @@ public class AdminService {
         hostel.setPaymentBufferDays(req.getPaymentBufferDays());
         hostel.setStatus(HostelStatus.PENDING);
         hostel.setAdmin(admin);
-
+        hostel.setBlockName(req.getBlockName());  // Add this line
         if (qrFile != null && !qrFile.isEmpty()) {
             hostel.setQrImagePath(fileStorageService.store(qrFile));
         }
