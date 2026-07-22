@@ -1,0 +1,97 @@
+/* =========================================
+   StayMate Global Design System
+========================================= */
+
+:root {
+    /* Primary colours */
+    --staymate-primary: #234a63;
+    --staymate-primary-dark: #18384d;
+
+    /* Secondary colours */
+    --staymate-secondary: #6d9b8d;
+    --staymate-secondary-dark: #547e72;
+    --staymate-secondary-light: #dcebe6;
+
+    /* Background colours */
+    --staymate-background: #f4f7f5;
+    --staymate-surface: #ffffff;
+
+    /* Text colours */
+    --staymate-text: #193242;
+    --staymate-text-light: #667985;
+
+    /* Borders and status colours */
+    --staymate-border: #d8e3e0;
+    --staymate-error: #b95757;
+    --staymate-success: #477a65;
+
+    /* Shared shadow */
+    --staymate-shadow:
+        0 24px 65px rgba(30, 67, 84, 0.14);
+
+    font-family:
+        "Segoe UI",
+        Arial,
+        sans-serif;
+
+    color: var(--staymate-text);
+    background: var(--staymate-background);
+
+    font-synthesis: none;
+    text-rendering: optimizeLegibility;
+}
+
+/* Reset default spacing and sizing */
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+html {
+    min-width: 320px;
+    min-height: 100%;
+    scroll-behavior: smooth;
+}
+
+body {
+    min-width: 320px;
+    min-height: 100vh;
+    margin: 0;
+    color: var(--staymate-text);
+    background: var(--staymate-background);
+}
+
+#root {
+    min-height: 100vh;
+}
+
+/* Make form elements use the same font */
+
+button,
+input,
+select,
+textarea {
+    font: inherit;
+}
+
+/* Default button behaviour */
+
+button {
+    cursor: pointer;
+}
+
+/* Default link behaviour */
+
+a {
+    color: inherit;
+}
+
+/* Responsive images */
+
+img,
+svg {
+    display: block;
+    max-width: 100%;
+}

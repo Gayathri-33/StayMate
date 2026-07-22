@@ -1,0 +1,540 @@
+.resident-menu-page {
+    display: grid;
+    gap: 22px;
+}
+
+/* Banner */
+
+.resident-menu-banner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 30px;
+    min-height: 195px;
+    padding: 32px 36px;
+    overflow: hidden;
+    border-radius: 22px;
+    color: white;
+    background:
+        linear-gradient(
+            135deg,
+            var(--staymate-primary-dark),
+            var(--staymate-primary) 62%,
+            var(--staymate-secondary-dark)
+        );
+    box-shadow:
+        0 16px 38px rgba(35, 74, 99, 0.17);
+}
+
+.resident-menu-banner-content {
+    max-width: 680px;
+}
+
+.resident-menu-banner-label {
+    display: inline-block;
+    padding: 7px 12px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 20px;
+    color: #dcebe6;
+    background: rgba(255, 255, 255, 0.08);
+    font-size: 9px;
+    font-weight: 750;
+    letter-spacing: 0.7px;
+    text-transform: uppercase;
+}
+
+.resident-menu-banner h2 {
+    margin: 14px 0 8px;
+    font-size: 30px;
+    letter-spacing: -0.7px;
+}
+
+.resident-menu-banner-content > p {
+    margin: 0;
+    color: rgba(255, 255, 255, 0.69);
+    font-size: 12px;
+    line-height: 1.7;
+}
+
+.resident-menu-banner-details {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 9px;
+    margin-top: 20px;
+}
+
+.resident-menu-banner-details span {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 10px;
+    border-radius: 9px;
+    color: rgba(255, 255, 255, 0.8);
+    background: rgba(255, 255, 255, 0.09);
+    font-size: 8px;
+}
+
+.resident-menu-banner-details svg {
+    width: 15px;
+    height: 15px;
+}
+
+.resident-menu-today-card {
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+    flex-direction: column;
+    justify-content: center;
+    width: 165px;
+    height: 135px;
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    border-radius: 22px;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+}
+
+.resident-menu-today-card span {
+    color: rgba(255, 255, 255, 0.57);
+    font-size: 8px;
+    letter-spacing: 0.7px;
+    text-transform: uppercase;
+}
+
+.resident-menu-today-card strong {
+    margin: 7px 0;
+    font-size: 24px;
+}
+
+.resident-menu-today-card small {
+    color: #d4e9e2;
+    font-size: 8px;
+}
+
+/* Shared sections */
+
+.resident-menu-day-section,
+.resident-menu-meals-section {
+    padding: 23px;
+    border: 1px solid var(--staymate-border);
+    border-radius: 18px;
+    background: white;
+    box-shadow:
+        0 7px 20px rgba(30, 67, 84, 0.05);
+}
+
+.resident-menu-section-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+}
+
+.resident-menu-section-heading h2 {
+    margin: 0;
+    color: var(--staymate-primary-dark);
+    font-size: 16px;
+}
+
+.resident-menu-section-heading p {
+    margin: 4px 0 0;
+    color: var(--staymate-text-light);
+    font-size: 9px;
+}
+
+.resident-menu-section-heading > button {
+    min-height: 35px;
+    padding: 7px 11px;
+    border: 1px solid var(--staymate-border);
+    border-radius: 9px;
+    color: var(--staymate-primary);
+    background: white;
+    font-size: 9px;
+    font-weight: 700;
+}
+
+.resident-menu-section-heading > button:hover {
+    border-color: var(--staymate-secondary);
+    background: var(--staymate-secondary-light);
+}
+
+.resident-menu-meal-count {
+    padding: 6px 10px;
+    border-radius: 14px;
+    color: var(--staymate-secondary-dark);
+    background: var(--staymate-secondary-light);
+    font-size: 8px;
+    font-weight: 750;
+}
+
+/* Day tabs */
+
+.resident-menu-day-tabs {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 8px;
+    margin-top: 18px;
+}
+
+.resident-menu-day-tabs button {
+    position: relative;
+    display: flex;
+    align-items: center;
+    min-height: 70px;
+    padding: 9px;
+    border: 1px solid var(--staymate-border);
+    border-radius: 11px;
+    color: var(--staymate-text-light);
+    background: #fbfcfc;
+    flex-direction: column;
+    justify-content: center;
+    transition:
+        border-color 0.2s ease,
+        background-color 0.2s ease,
+        transform 0.2s ease;
+}
+
+.resident-menu-day-tabs button:hover {
+    border-color: var(--staymate-secondary);
+    transform: translateY(-2px);
+}
+
+.resident-menu-day-tabs button > span {
+    display: none;
+}
+
+.resident-menu-day-tabs strong {
+    font-size: 10px;
+}
+
+.resident-menu-day-tabs small {
+    margin-top: 5px;
+    padding: 3px 6px;
+    border-radius: 9px;
+    color: var(--staymate-secondary-dark);
+    background: var(--staymate-secondary-light);
+    font-size: 6px;
+    font-weight: 700;
+}
+
+.resident-menu-day-tabs .resident-menu-day-active {
+    border-color: var(--staymate-primary);
+    color: white;
+    background: var(--staymate-primary);
+    box-shadow:
+        0 7px 16px rgba(35, 74, 99, 0.17);
+}
+
+.resident-menu-day-tabs .resident-menu-day-active small {
+    color: var(--staymate-primary-dark);
+    background: var(--staymate-secondary-light);
+}
+
+/* Meal cards */
+
+.resident-menu-meals-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px;
+    margin-top: 19px;
+}
+
+.resident-meal-card {
+    padding: 18px;
+    border: 1px solid var(--staymate-border);
+    border-radius: 15px;
+    background: #fbfcfc;
+    transition:
+        box-shadow 0.2s ease,
+        transform 0.2s ease;
+}
+
+.resident-meal-card:hover {
+    box-shadow:
+        0 10px 25px rgba(30, 67, 84, 0.08);
+    transform: translateY(-2px);
+}
+
+.resident-meal-card-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.resident-meal-icon {
+    display: grid;
+    width: 45px;
+    height: 45px;
+    place-items: center;
+    border-radius: 13px;
+    color: var(--staymate-primary);
+    background: var(--staymate-secondary-light);
+}
+
+.resident-meal-icon svg {
+    width: 25px;
+    height: 25px;
+}
+
+.resident-meal-time {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    color: var(--staymate-text-light);
+    font-size: 8px;
+}
+
+.resident-meal-time svg {
+    width: 14px;
+    height: 14px;
+}
+
+.resident-meal-content {
+    min-height: 75px;
+    margin-top: 14px;
+}
+
+.resident-meal-type {
+    color: var(--staymate-secondary-dark);
+    font-size: 8px;
+    font-weight: 750;
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
+}
+
+.resident-meal-content h3 {
+    margin: 7px 0 0;
+    color: var(--staymate-primary-dark);
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+.resident-meal-card-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding-top: 12px;
+    border-top: 1px solid #e8eeeb;
+}
+
+.resident-meal-card-footer span {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    color: var(--staymate-text-light);
+    font-size: 7px;
+}
+
+.resident-meal-card-footer i {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--staymate-success);
+}
+
+/* Information cards */
+
+.resident-menu-information-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+}
+
+.resident-menu-info-card,
+.resident-menu-feedback-card {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 20px;
+    border: 1px solid var(--staymate-border);
+    border-radius: 16px;
+    background: white;
+    box-shadow:
+        0 7px 20px rgba(30, 67, 84, 0.05);
+}
+
+.resident-menu-info-icon,
+.resident-menu-feedback-icon {
+    display: grid;
+    flex-shrink: 0;
+    width: 42px;
+    height: 42px;
+    place-items: center;
+    border-radius: 12px;
+    color: var(--staymate-primary);
+    background: var(--staymate-secondary-light);
+}
+
+.resident-menu-info-icon svg,
+.resident-menu-feedback-icon svg {
+    width: 23px;
+    height: 23px;
+}
+
+.resident-menu-info-card h2,
+.resident-menu-feedback-card h2 {
+    margin: 0 0 7px;
+    color: var(--staymate-primary-dark);
+    font-size: 12px;
+}
+
+.resident-menu-info-card > div > p,
+.resident-menu-feedback-card p {
+    margin: 0;
+    color: var(--staymate-text-light);
+    font-size: 8px;
+    line-height: 1.55;
+}
+
+.resident-dining-time-list {
+    display: grid;
+    gap: 7px;
+    margin-top: 13px;
+}
+
+.resident-dining-time-list span {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid #edf1ef;
+    color: var(--staymate-text-light);
+    font-size: 7px;
+}
+
+.resident-dining-time-list strong {
+    color: var(--staymate-text);
+    font-size: 7px;
+}
+
+.resident-menu-info-card ul {
+    display: grid;
+    gap: 7px;
+    padding: 0;
+    margin: 0;
+    list-style: none;
+}
+
+.resident-menu-info-card li {
+    position: relative;
+    padding-left: 13px;
+    color: var(--staymate-text-light);
+    font-size: 8px;
+    line-height: 1.45;
+}
+
+.resident-menu-info-card li::before {
+    position: absolute;
+    top: 5px;
+    left: 0;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--staymate-secondary);
+    content: "";
+}
+
+.resident-menu-feedback-card {
+    color: white;
+    border: none;
+    background:
+        linear-gradient(
+            135deg,
+            var(--staymate-primary-dark),
+            var(--staymate-primary)
+        );
+}
+
+.resident-menu-feedback-icon {
+    color: var(--staymate-primary-dark);
+}
+
+.resident-menu-feedback-card h2 {
+    color: white;
+}
+
+.resident-menu-feedback-card p {
+    color: rgba(255, 255, 255, 0.66);
+}
+
+.resident-menu-feedback-card button {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    min-height: 34px;
+    margin-top: 13px;
+    padding: 7px 10px;
+    border: none;
+    border-radius: 8px;
+    color: var(--staymate-primary-dark);
+    background: var(--staymate-secondary-light);
+    font-size: 8px;
+    font-weight: 750;
+}
+
+/* Responsive */
+
+@media (max-width: 1050px) {
+    .resident-menu-day-tabs {
+        grid-template-columns: repeat(4, 1fr);
+    }
+
+    .resident-menu-information-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 700px) {
+    .resident-menu-banner {
+        min-height: auto;
+        padding: 27px 22px;
+    }
+
+    .resident-menu-banner h2 {
+        font-size: 24px;
+    }
+
+    .resident-menu-today-card {
+        width: 120px;
+        height: 110px;
+    }
+
+    .resident-menu-today-card strong {
+        font-size: 18px;
+    }
+
+    .resident-menu-meals-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 520px) {
+    .resident-menu-today-card {
+        display: none;
+    }
+
+    .resident-menu-day-section,
+    .resident-menu-meals-section {
+        padding: 18px;
+    }
+
+    .resident-menu-day-tabs {
+        grid-template-columns: repeat(4, 1fr);
+    }
+
+    .resident-menu-day-tabs button {
+        min-height: 56px;
+    }
+
+    .resident-menu-day-tabs button > span {
+        display: block;
+        font-size: 9px;
+        font-weight: 700;
+    }
+
+    .resident-menu-day-tabs strong {
+        display: none;
+    }
+}
