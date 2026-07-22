@@ -5,95 +5,115 @@ import AdminNavbar from "../../components/admin/AdminNavbar";
 import roomService from "../../services/roomService";
 
 function AddRoom() {
+  const navigate = useNavigate();
 
-    const navigate = useNavigate();
+  const user = JSON.parse(localStorage.getItem("user"));
 
-    const [room,setRoom]=useState({
-        roomNumber:"",
-        roomType:"",
-        floor:"",
-        capacity:"",
-        hostelCode:localStorage.getItem("hostelCode")
-    });
+  const [room, setRoom] = useState({
+    roomNumber: "",
+    roomType: "",
+    capacity: "",
+    occupiedBeds: 0,
+    availableBeds: "",
+    hostelCode: user?.hostelCode || "",
+  });
 
-    const handleChange=(e)=>{
-        setRoom({...room,[e.target.name]:e.target.value});
+  const handleChange = (e) => {
+    setRoom({ ...room, [e.target.name]: e.target.value });
+  };
+
+  const saveRoom = async (e) => {
+    e.preventDefault();
+
+    console.log("Room Data:", room);
+
+    try {
+      const res = await roomService.addRoom(room);
+
+      console.log("Response:", res);
+
+      alert("Room Added Successfully");
+
+      navigate("/admin/rooms");
+    } catch (err) {
+      console.log("Error:", err);
+
+      console.log("Response:", err.response);
+
+      alert("Failed to Add Room");
     }
+  };
 
-    const saveRoom=async(e)=>{
-        e.preventDefault();
+  return (
+    <>
+      <AdminNavbar />
+      <AdminSidebar />
 
-        await roomService.addRoom(room);
+      <div
+        style={{
+          marginLeft: "270px",
+          padding: "30px",
+          marginTop: "80px",
+        }}
+      >
+        <div className="card">
+          <div className="card-header bg-primary text-white">Add Room</div>
 
-        alert("Room Added Successfully");
+          <div className="card-body">
+            <form onSubmit={saveRoom}>
+              <input
+                className="form-control mb-3"
+                placeholder="Room Number"
+                name="roomNumber"
+                value={room.roomNumber}
+                onChange={handleChange}
+              />
 
-        navigate("/admin/rooms");
-    }
+              <select
+                className="form-control mb-3"
+                name="roomType"
+                value={room.roomType}
+                onChange={handleChange}
+              >
+                <option value="">Select Room Type</option>
+                <option value="AC">AC</option>
+                <option value="Non AC">Non AC</option>
+              </select>
 
-    return(
-        <>
-        <AdminNavbar/>
-        <AdminSidebar/>
+              <input
+                type="number"
+                className="form-control mb-3"
+                placeholder="Capacity"
+                name="capacity"
+                value={room.capacity}
+                onChange={handleChange}
+              />
 
-        <div className="container mt-5">
+              <input
+                type="number"
+                className="form-control mb-3"
+                placeholder="Occupied Beds"
+                name="occupiedBeds"
+                value={room.occupiedBeds}
+                onChange={handleChange}
+              />
 
-            <div className="card">
+              <input
+                type="number"
+                className="form-control mb-3"
+                placeholder="Available Beds"
+                name="availableBeds"
+                value={room.availableBeds}
+                onChange={handleChange}
+              />
 
-                <div className="card-header bg-primary text-white">
-                    Add Room
-                </div>
-
-                <div className="card-body">
-
-                    <form onSubmit={saveRoom}>
-
-                        <input
-                        className="form-control mb-3"
-                        placeholder="Room Number"
-                        name="roomNumber"
-                        onChange={handleChange}
-                        />
-
-                        <select
-                        className="form-control mb-3"
-                        name="roomType"
-                        onChange={handleChange}>
-
-                            <option>Single</option>
-                            <option>Double</option>
-                            <option>Triple</option>
-
-                        </select>
-
-                        <input
-                        className="form-control mb-3"
-                        placeholder="Floor"
-                        name="floor"
-                        onChange={handleChange}
-                        />
-
-                        <input
-                        className="form-control mb-3"
-                        placeholder="Capacity"
-                        name="capacity"
-                        onChange={handleChange}
-                        />
-
-                        <button className="btn btn-success">
-                            Save Room
-                        </button>
-
-                    </form>
-
-                </div>
-
-            </div>
-
+              <button className="btn btn-success">Save Room</button>
+            </form>
+          </div>
         </div>
-
-        </>
-    )
-
+      </div>
+    </>
+  );
 }
 
 export default AddRoom;

@@ -3,12 +3,12 @@ import {
   FaHome,
   FaUsers,
   FaDoorOpen,
+  FaBed,
   FaMoneyBillWave,
   FaExclamationCircle,
   FaChartBar,
   FaCog,
   FaSignOutAlt,
-  FaUserGraduate,
 } from "react-icons/fa";
 
 import authService from "../../services/authService";
@@ -18,54 +18,64 @@ function AdminSidebar() {
 
   const menus = [
     {
+      id: 1,
       name: "Dashboard",
       icon: <FaHome />,
       path: "/admin/dashboard",
     },
     {
+      id: 2,
       name: "Pending Residents",
       icon: <FaUsers />,
       path: "/admin/pending-residents",
     },
     {
+      id: 3,
       name: "Approved Residents",
       icon: <FaUsers />,
       path: "/admin/approved-residents",
     },
     {
+      id: 4,
       name: "Rooms",
       icon: <FaDoorOpen />,
       path: "/admin/rooms",
     },
     {
+      id: 5,
+      name: "Add Room",
+      icon: <FaDoorOpen />,
+      path: "/admin/rooms/add",
+    },
+    {
+      id: 6,
+      name: "Bed Management",
+      icon: <FaBed />,
+      path: "/admin/beds",
+    },
+    {
+      id: 7,
       name: "Fees",
       icon: <FaMoneyBillWave />,
       path: "/admin/fees",
     },
     {
+      id: 8,
       name: "Complaints",
       icon: <FaExclamationCircle />,
       path: "/admin/complaints",
     },
     {
+      id: 9,
       name: "Reports",
       icon: <FaChartBar />,
       path: "/admin/reports",
     },
     {
+      id: 10,
       name: "Settings",
       icon: <FaCog />,
       path: "/admin/settings",
-    },
-    {
-      name: "Pending Residents",
-      icon: <FaUserGraduate />,
-      path: "/admin/pending-residents",
-    },
-    {
-      name: "Approved Residents",
-      icon: <FaUsers />,
-      path: "/admin/approved-residents",
     },
   ];
 
@@ -77,6 +87,10 @@ function AdminSidebar() {
         background: "#0f172a",
         color: "#fff",
         position: "fixed",
+        left: 0,
+        top: 0,
+        display: "flex",
+        flexDirection: "column",
       }}
     >
       <h2
@@ -84,40 +98,46 @@ function AdminSidebar() {
           textAlign: "center",
           padding: "25px",
           borderBottom: "1px solid #334155",
+          margin: 0,
         }}
       >
         StayMate Admin
       </h2>
 
-      {menus.map((menu) => (
-        <Link
-          key={menu.name}
-          to={menu.path}
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: "15px",
-            padding: "15px 25px",
-            color: "#fff",
-            textDecoration: "none",
-            background:
-              location.pathname === menu.path ? "#2563eb" : "transparent",
-          }}
-        >
-          {menu.icon}
-          {menu.name}
-          <li>
-            <Link to="/admin/rooms">Rooms</Link>
-          </li>
-
-          <li>
-            <Link to="/admin/rooms/add">Add Room</Link>
-          </li>
-          <li>
-            <Link to="/admin/beds">Bed Management</Link>
-          </li>
-        </Link>
-      ))}
+      <div style={{ flex: 1, overflowY: "auto" }}>
+        {menus.map((menu) => (
+          <Link
+            key={menu.id}
+            to={menu.path}
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "15px",
+              padding: "15px 25px",
+              color: "#fff",
+              textDecoration: "none",
+              background:
+                location.pathname === menu.path
+                  ? "#2563eb"
+                  : "transparent",
+              transition: "0.3s",
+            }}
+            onMouseEnter={(e) => {
+              if (location.pathname !== menu.path) {
+                e.currentTarget.style.background = "#1e293b";
+              }
+            }}
+            onMouseLeave={(e) => {
+              if (location.pathname !== menu.path) {
+                e.currentTarget.style.background = "transparent";
+              }
+            }}
+          >
+            <span style={{ fontSize: "18px" }}>{menu.icon}</span>
+            <span>{menu.name}</span>
+          </Link>
+        ))}
+      </div>
 
       <button
         onClick={() => {
@@ -125,18 +145,18 @@ function AdminSidebar() {
           window.location.href = "/login";
         }}
         style={{
-          width: "90%",
-          margin: "25px auto",
-          display: "block",
+          margin: "20px",
           padding: "12px",
           border: "none",
           borderRadius: "8px",
           background: "#ef4444",
           color: "#fff",
           cursor: "pointer",
+          fontSize: "16px",
         }}
       >
-        <FaSignOutAlt /> Logout
+        <FaSignOutAlt style={{ marginRight: "10px" }} />
+        Logout
       </button>
     </div>
   );

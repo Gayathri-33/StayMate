@@ -144,20 +144,33 @@ function App() {
             </PrivateRoute>
           }
         />
+
         <Route
-          path="/admin/resident/:id"
+          path="/admin/rooms"
           element={
             <PrivateRoute>
-              <ResidentDetails />
+              <RoomList />
             </PrivateRoute>
           }
         />
-        <Route path="/admin/rooms" element={<RoomList />} />
 
-        <Route path="/admin/rooms/add" element={<AddRoom />} />
+        <Route
+          path="/admin/rooms/add"
+          element={
+            <PrivateRoute>
+              <AddRoom />
+            </PrivateRoute>
+          }
+        />
 
-        <Route path="/admin/rooms/edit/:id" element={<EditRoom />} />
-
+        <Route
+          path="/admin/rooms/edit/:id"
+          element={
+            <PrivateRoute>
+              <EditRoom />
+            </PrivateRoute>
+          }
+        />
         <Route path="/admin/beds" element={<BedList />} />
 
         <Route path="/admin/beds/add" element={<AddBed />} />

@@ -3,120 +3,87 @@ import { Link } from "react-router-dom";
 import roomService from "../../services/roomService";
 
 function RoomList() {
+  const hostelCode = JSON.parse(localStorage.getItem("user")).hostelCode;
 
-    const hostelCode = JSON.parse(localStorage.getItem("user")).hostelCode;
+  const [rooms, setRooms] = useState([]);
 
-    const [rooms, setRooms] = useState([]);
-
-    useEffect(() => {
-        const loadRooms = async () => {
-            const response = await roomService.getRooms(hostelCode);
-            setRooms(response.data);
-        };
-        loadRooms();
-    }, [hostelCode]);
-
+  useEffect(() => {
     const loadRooms = async () => {
-        const response = await roomService.getRooms(hostelCode);
-        setRooms(response.data);
+      const response = await roomService.getRooms(hostelCode);
+      setRooms(response.data);
     };
+    loadRooms();
+  }, [hostelCode]);
 
-    const deleteRoom = async (id) => {
+  const loadRooms = async () => {
+    const response = await roomService.getRooms(hostelCode);
+    setRooms(response.data);
+  };
 
-        if (window.confirm("Delete Room?")) {
-            await roomService.deleteRoom(id);
-            loadRooms();
-        }
+  const deleteRoom = async (id) => {
+    if (window.confirm("Delete Room?")) {
+      await roomService.deleteRoom(id);
+      loadRooms();
+    }
+  };
 
-    };
+  return (
+    <div className="container mt-4">
+      <div className="d-flex justify-content-between">
+        <h2>Rooms</h2>
 
-    return (
+        <Link to="/admin/rooms/add" className="btn btn-success">
+          Add Room
+        </Link>
+      </div>
 
-        <div className="container mt-4">
+      <table className="table table-bordered mt-3">
+        <thead>
+          <tr>
+            <th>Room No</th>
 
-            <div className="d-flex justify-content-between">
+            <th>Type</th>
 
-                <h2>Rooms</h2>
+            <th>Capacity</th>
 
+            <th>Occupied</th>
+
+            <th>Available</th>
+
+            <th>Action</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          {rooms.map((room) => (
+            <tr key={room.roomId}>
+              <td>{room.roomNumber}</td>
+              <td>{room.roomType}</td>
+              <td>{room.capacity}</td>
+              <td>{room.occupiedBeds}</td>
+              <td>{room.availableBeds}</td>
+              <td>{room.status}</td>
+              <td>
                 <Link
-                    to="/admin/add-room"
-                    className="btn btn-success"
+                  to={`/admin/rooms/edit/${room.roomId}`}
+                  className="btn btn-warning btn-sm me-2"
                 >
-                    Add Room
+                  Edit
                 </Link>
 
-            </div>
-
-            <table className="table table-bordered mt-3">
-
-                <thead>
-
-                    <tr>
-
-                        <th>Room No</th>
-
-                        <th>Type</th>
-
-                        <th>Capacity</th>
-
-                        <th>Occupied</th>
-
-                        <th>Available</th>
-
-                        <th>Action</th>
-
-                    </tr>
-
-                </thead>
-
-                <tbody>
-
-                    {
-                        rooms.map(room => (
-
-                            <tr key={room.roomId}>
-
-                                <td>{room.roomNumber}</td>
-
-                                <td>{room.roomType}</td>
-
-                                <td>{room.capacity}</td>
-
-                                <td>{room.occupiedBeds}</td>
-
-                                <td>{room.availableBeds}</td>
-
-                                <td>
-
-                                    <Link
-                                        to={`/admin/edit-room/${room.roomId}`}
-                                        className="btn btn-warning btn-sm me-2"
-                                    >
-                                        Edit
-                                    </Link>
-
-                                    <button
-                                        className="btn btn-danger btn-sm"
-                                        onClick={() => deleteRoom(room.roomId)}
-                                    >
-                                        Delete
-                                    </button>
-
-                                </td>
-
-                            </tr>
-
-                        ))
-                    }
-
-                </tbody>
-
-            </table>
-
-        </div>
-
-    );
-
+                <button
+                  className="btn btn-danger btn-sm"
+                  onClick={() => deleteRoom(room.roomId)}
+                >
+                  Delete
+                </button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
 }
 
 export default RoomList;

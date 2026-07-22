@@ -30,6 +30,9 @@ public class Room {
     @Column(nullable = false)
     private String hostelCode;
 
+    @Column(nullable = false)
+    private String status;
+    
     private LocalDateTime createdAt;
 
     @PrePersist
@@ -102,6 +105,14 @@ public class Room {
 
 	public void setCreatedAt(LocalDateTime createdAt) {
 		this.createdAt = createdAt;
+	}
+
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
 	}
 
     

@@ -1,27 +1,24 @@
 import api from "./api";
 
-const API="/rooms";
+const getRooms = (hostelCode) =>
+  api.get(`/rooms/hostel/${hostelCode}`);
 
-export default{
+const getRoom = (id) =>
+  api.get(`/rooms/${id}`);
 
-    getRooms(){
-        return api.get(API);
-    },
+const addRoom = (room) =>
+  api.post("/rooms", room);
 
-    getRoom(id){
-        return api.get(`${API}/${id}`);
-    },
+const updateRoom = (id, room) =>
+  api.put(`/rooms/${id}`, room);
 
-    addRoom(room){
-        return api.post(API,room);
-    },
+const deleteRoom = (id) =>
+  api.delete(`/rooms/${id}`);
 
-    updateRoom(id,room){
-        return api.put(`${API}/${id}`,room);
-    },
-
-    deleteRoom(id){
-        return api.delete(`${API}/${id}`);
-    }
-
-}
+export default {
+  getRooms,
+  getRoom,
+  addRoom,
+  updateRoom,
+  deleteRoom,
+};

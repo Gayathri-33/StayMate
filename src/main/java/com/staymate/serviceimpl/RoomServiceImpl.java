@@ -19,18 +19,24 @@ public class RoomServiceImpl implements RoomService {
     @Override
     public Room addRoom(RoomDTO dto) {
 
-        Room room = new Room();
+    	Room room = new Room();
 
-        room.setRoomNumber(dto.getRoomNumber());
-        room.setRoomType(dto.getRoomType());
-        room.setCapacity(dto.getCapacity());
+    	room.setRoomNumber(dto.getRoomNumber());
+    	room.setRoomType(dto.getRoomType());
+    	room.setCapacity(dto.getCapacity());
 
-        room.setOccupiedBeds(0);
-        room.setAvailableBeds(dto.getCapacity());
+    	room.setOccupiedBeds(dto.getOccupiedBeds());
+    	room.setAvailableBeds(dto.getAvailableBeds());
 
-        room.setHostelCode(dto.getHostelCode());
+    	room.setHostelCode(dto.getHostelCode());
 
-        return roomRepository.save(room);
+    	if(dto.getAvailableBeds() > 0){
+    	    room.setStatus("Available");
+    	}else{
+    	    room.setStatus("Full");
+    	}
+
+    	return roomRepository.save(room);
     }
 
     @Override
@@ -65,6 +71,16 @@ public class RoomServiceImpl implements RoomService {
     public void deleteRoom(Long id) {
 
         roomRepository.deleteById(id);
+
+    }
+    @Override
+    public List<Room> getAllRooms() {
+        return roomRepository.findAll();
+    }
+    @Override
+    public Room getRoom(Long id){
+
+        return roomRepository.findById(id).orElse(null);
 
     }
 }

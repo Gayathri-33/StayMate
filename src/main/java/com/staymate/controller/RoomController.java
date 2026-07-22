@@ -19,30 +19,35 @@ public class RoomController {
 
     @PostMapping
     public Room addRoom(@RequestBody RoomDTO dto) {
-
         return roomService.addRoom(dto);
-
     }
 
-    @GetMapping("/{hostelCode}")
+    // NEW
+    @GetMapping
+    public List<Room> getAllRooms() {
+        return roomService.getAllRooms();
+    }
+
+    // Keep this
+    @GetMapping("/hostel/{hostelCode}")
     public List<Room> getRooms(@PathVariable String hostelCode) {
-
         return roomService.getRooms(hostelCode);
-
     }
 
     @PutMapping("/{id}")
-    public Room updateRoom(@PathVariable Long id,
-                           @RequestBody RoomDTO dto) {
+    public Room updateRoom(
+            @PathVariable Long id,
+            @RequestBody RoomDTO dto) {
 
         return roomService.updateRoom(id, dto);
-
     }
 
     @DeleteMapping("/{id}")
     public void deleteRoom(@PathVariable Long id) {
-
         roomService.deleteRoom(id);
-
+    }
+    @GetMapping("/{id}")
+    public Room getRoom(@PathVariable Long id){
+        return roomService.getRoom(id);
     }
 }

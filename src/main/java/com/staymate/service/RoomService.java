@@ -7,12 +7,15 @@ import com.staymate.entity.Room;
 
 public interface RoomService {
 
-    Room addRoom(RoomDTO dto);
+	Room addRoom(RoomDTO dto);
 
-    List<Room> getRooms(String hostelCode);
+	List<Room> getAllRooms();     // NEW
 
-    Room updateRoom(Long id, RoomDTO dto);
+	List<Room> getRooms(String hostelCode);
 
-    void deleteRoom(Long id);
+	Room updateRoom(Long id, RoomDTO dto);
 
+	void deleteRoom(Long id);
+	
+	Room getRoom(Long id);
 }
