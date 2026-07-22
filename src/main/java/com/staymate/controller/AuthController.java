@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.*;
 
 import com.staymate.dto.LoginDTO;
 import com.staymate.service.AuthService;
+import com.staymate.dto.LoginResponseDTO;
 
 @RestController
 @RequestMapping("/auth")
@@ -15,7 +16,7 @@ public class AuthController {
     private AuthService authService;
 
     @PostMapping("/login")
-    public String login(@RequestBody LoginDTO loginDTO) {
+    public LoginResponseDTO login(@RequestBody LoginDTO loginDTO) {
 
         return authService.login(loginDTO);
 

@@ -55,7 +55,6 @@ public class SuperAdminServiceImpl implements SuperAdminService {
             if (user.getPassword() != null && !user.getPassword().isEmpty()) {
                 existingAdmin.setPassword(user.getPassword());
             }
-
             return userRepository.save(existingAdmin);
         }
 

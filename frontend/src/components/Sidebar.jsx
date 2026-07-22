@@ -22,36 +22,49 @@ function Sidebar() {
       icon: <FaHome />,
       path: "/superadmin/dashboard",
     },
+
     {
       name: "Manage Admins",
       icon: <FaUserTie />,
       path: "/superadmin/admins",
     },
+
+    {
+      name: "Pending Hostels",
+      icon: <FaBuilding />,
+      path: "/superadmin/pending-hostels",
+    },
+
     {
       name: "Hostels",
       icon: <FaBuilding />,
       path: "/superadmin/hostels",
     },
+
     {
       name: "Rooms",
       icon: <FaBed />,
       path: "/superadmin/rooms",
     },
+
     {
       name: "Students",
       icon: <FaUserGraduate />,
       path: "/superadmin/students",
     },
+
     {
       name: "Fees",
       icon: <FaMoneyBillWave />,
       path: "/superadmin/fees",
     },
+
     {
       name: "Reports",
       icon: <FaChartBar />,
       path: "/superadmin/reports",
     },
+
     {
       name: "Settings",
       icon: <FaCog />,

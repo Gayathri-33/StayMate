@@ -19,7 +19,10 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long userId;
-
+    
+    @Column(unique = true)
+    private String hostelCode;
+    
     @Column(nullable = false)
     private String fullName;
 
@@ -110,6 +113,17 @@ public class User {
 	public void setCreatedAt(LocalDateTime createdAt) {
 		this.createdAt = createdAt;
 	}
+
+	public String getHostelCode() {
+		return hostelCode;
+	}
+
+	public void setHostelCode(String hostelCode) {
+		this.hostelCode = hostelCode;
+	}
+
+
+	
 
     
 }

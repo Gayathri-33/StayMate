@@ -2,10 +2,11 @@ import { useEffect, useState } from "react";
 import Sidebar from "../../components/Sidebar";
 import Navbar from "../../components/Navbar";
 import adminService from "../../services/adminService";
+import { useNavigate } from "react-router-dom";
 
 function AdminList() {
   const [admins, setAdmins] = useState([]);
-
+  const navigate = useNavigate();
   const loadAdmins = async () => {
     try {
       const response = await adminService.getAdmins();
@@ -39,7 +40,7 @@ function AdminList() {
 
   const handleDelete = async (id) => {
     const confirmDelete = window.confirm(
-      "Are you sure you want to delete this admin?"
+      "Are you sure you want to delete this admin?",
     );
 
     if (!confirmDelete) return;
@@ -108,7 +109,12 @@ function AdminList() {
                     <td style={td}>{admin.status}</td>
 
                     <td style={td}>
-                      <button style={editBtn}>
+                      <button
+                        style={editBtn}
+                        onClick={() =>
+                          navigate(`/superadmin/edit-admin/${admin.userId}`)
+                        }
+                      >
                         Edit
                       </button>
 

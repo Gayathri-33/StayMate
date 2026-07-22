@@ -11,6 +11,8 @@ function Login() {
     password: "",
   });
 
+  const [loading, setLoading] = useState(false);
+
   const handleChange = (e) => {
     setLoginData({
       ...loginData,
@@ -19,21 +21,36 @@ function Login() {
   };
 
   const handleSubmit = async (e) => {
-  e.preventDefault();
+    e.preventDefault();
 
-  try {
-    const response = await authService.login(loginData);
+    if (!loginData.email || !loginData.password) {
+      alert("Please enter Email and Password");
+      return;
+    }
 
-    authService.saveAuthData(
-      response.data.token,
-      response.data.user
-    );
+    try {
+      setLoading(true);
 
-    navigate("/superadmin/dashboard");
-  } catch (error) {
-    alert(error.response?.data || "Invalid Credentials");
-  }
-};
+      const response = await authService.login(loginData);
+
+      const user = response.data;
+
+      authService.saveAuthData(user.token, user);
+
+      if (user.role === "SUPER_ADMIN") {
+        navigate("/superadmin/dashboard");
+      } else if (user.role === "ADMIN") {
+        navigate("/admin/dashboard");
+      } else {
+        alert("Unauthorized User");
+      }
+    } catch (error) {
+      console.error(error);
+      alert("Invalid Email or Password");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div
@@ -42,16 +59,16 @@ function Login() {
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
-        background: "#f1f5f9",
+        background: "#EEF2FF",
       }}
     >
       <div
         style={{
-          width: "400px",
+          width: "420px",
           background: "#fff",
-          padding: "35px",
-          borderRadius: "12px",
-          boxShadow: "0 5px 15px rgba(0,0,0,.15)",
+          padding: "40px",
+          borderRadius: "15px",
+          boxShadow: "0 8px 20px rgba(0,0,0,0.15)",
         }}
       >
         <div
@@ -60,15 +77,29 @@ function Login() {
             marginBottom: "30px",
           }}
         >
-          <FaUserShield size={60} color="#2563eb" />
+          <FaUserShield size={65} color="#2563EB" />
 
-          <h2>StayMate</h2>
+          <h2
+            style={{
+              marginTop: "10px",
+              marginBottom: "5px",
+            }}
+          >
+            StayMate
+          </h2>
 
-          <p>Super Admin Login</p>
+          <p style={{ color: "#666" }}>
+            Hostel Management System
+          </p>
+
+          <h3 style={{ marginTop: "20px" }}>
+            Login
+          </h3>
         </div>
 
         <form onSubmit={handleSubmit}>
-          <div style={{ marginBottom: "20px" }}>
+
+          <div style={{ marginBottom: "18px" }}>
             <label>Email</label>
 
             <input
@@ -77,17 +108,12 @@ function Login() {
               value={loginData.email}
               onChange={handleChange}
               placeholder="Enter Email"
-              style={{
-                width: "100%",
-                padding: "12px",
-                marginTop: "5px",
-                borderRadius: "6px",
-                border: "1px solid #ccc",
-              }}
+              style={inputStyle}
+              required
             />
           </div>
 
-          <div style={{ marginBottom: "20px" }}>
+          <div style={{ marginBottom: "25px" }}>
             <label>Password</label>
 
             <input
@@ -96,34 +122,44 @@ function Login() {
               value={loginData.password}
               onChange={handleChange}
               placeholder="Enter Password"
-              style={{
-                width: "100%",
-                padding: "12px",
-                marginTop: "5px",
-                borderRadius: "6px",
-                border: "1px solid #ccc",
-              }}
+              style={inputStyle}
+              required
             />
           </div>
 
           <button
+            type="submit"
+            disabled={loading}
             style={{
               width: "100%",
-              padding: "12px",
+              padding: "13px",
+              background: loading ? "#94A3B8" : "#2563EB",
+              color: "#fff",
               border: "none",
               borderRadius: "8px",
-              background: "#2563eb",
-              color: "#fff",
-              cursor: "pointer",
+              cursor: loading ? "not-allowed" : "pointer",
               fontSize: "16px",
+              fontWeight: "bold",
             }}
           >
-            Login
+            {loading ? "Logging in..." : "Login"}
           </button>
+
         </form>
       </div>
     </div>
   );
 }
+
+const inputStyle = {
+  width: "100%",
+  padding: "12px",
+  marginTop: "6px",
+  borderRadius: "6px",
+  border: "1px solid #CBD5E1",
+  outline: "none",
+  fontSize: "15px",
+  boxSizing: "border-box",
+};
 
 export default Login;
