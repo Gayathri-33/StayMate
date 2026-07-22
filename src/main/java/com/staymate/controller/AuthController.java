@@ -1,25 +1,41 @@
 package com.staymate.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import com.staymate.dto.*;
+import com.staymate.entity.User;
+import com.staymate.service.AuthService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import com.staymate.dto.LoginDTO;
-import com.staymate.service.AuthService;
-import com.staymate.dto.LoginResponseDTO;
-
 @RestController
-@RequestMapping("/auth")
-@CrossOrigin(origins = "http://localhost:5173")
+@RequestMapping("/api/auth")
 public class AuthController {
 
-    @Autowired
-    private AuthService authService;
+    private final AuthService authService;
 
-    @PostMapping("/login")
-    public LoginResponseDTO login(@RequestBody LoginDTO loginDTO) {
-
-        return authService.login(loginDTO);
-
+    public AuthController(AuthService authService) {
+        this.authService = authService;
     }
 
+    @PostMapping("/register/admin")
+    public ResponseEntity<?> registerAdmin(@RequestBody AdminRegisterRequest req) {
+        try {
+            User user = authService.registerAdmin(req);
+            return ResponseEntity.ok(java.util.Map.of(
+                    "message", "Registration submitted. Await Super Admin approval.",
+                    "userId", user.getUserId()
+            ));
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(java.util.Map.of("error", e.getMessage()));
+        }
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@RequestBody LoginRequest req) {
+        try {
+            LoginResponse response = authService.login(req);
+            return ResponseEntity.ok(response);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(401).body(java.util.Map.of("error", e.getMessage()));
+        }
+    }
 }

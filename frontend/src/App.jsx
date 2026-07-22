@@ -1,184 +1,167 @@
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
+import ProtectedRoute from "./routes/ProtectedRoute";
 
+// Auth & Public
+import Home from "./pages/Home";
 import Login from "./pages/Login";
+import AdminRegister from "./pages/AdminRegister";
+import ResidentRegister from "./pages/ResidentRegister";
 
-// Super Admin
-import Dashboard from "./pages/superadmin/Dashboard";
-import AdminList from "./pages/superadmin/AdminList";
-import AddAdmin from "./pages/superadmin/AddAdmin";
-import EditAdmin from "./pages/superadmin/EditAdmin";
-import PendingHostels from "./pages/superadmin/PendingHostels";
-import ApprovedHostels from "./pages/superadmin/ApprovedHostels";
+// SuperAdmin
+import SuperAdminDashboard from "./pages/superadmin/SuperAdminDashboard";
+import AdminManagement from "./pages/superadmin/AdminManagement";
+import HostelManagement from "./pages/superadmin/HostelManagement";
+import Notifications from "./pages/superadmin/Notifications";
 
 // Admin
-import AdminDashboard from "./pages/admin/Dashboard";
-import PendingResidents from "./pages/admin/PendingResidents";
-import ApprovedResidents from "./pages/admin/ApprovedResidents";
+import AdminDashboard from "./pages/admin/AdminDashboard";
+import HostelRegistration from "./pages/admin/HostelRegistration";
+import RoomsBeds from "./pages/admin/RoomBeds";
+import ResidentManagement from "./pages/admin/ResidentManagement";
+import ManageRequests from "./pages/admin/ManageRequests";
 
-// Hostel Owner
-import HostelRegistration from "./pages/hostelowner/HostelRegistration";
-
-// Route Protection
-import PrivateRoute from "./routes/PrivateRoute";
-import ResidentDetails from "./pages/admin/ResidentDetails";
-import EditResident from "./pages/admin/EditResident";
-
-import RoomList from "./pages/admin/RoomList";
-import AddRoom from "./pages/admin/AddRoom";
-import EditRoom from "./pages/admin/EditRoom";
-
-import BedList from "./pages/admin/BedList";
-import AddBed from "./pages/admin/AddBed";
-import EditBed from "./pages/admin/EditBed";
+// Resident
+import ResidentDashboard from "./pages/resident/ResidentDashboard";
+import PaymentPage from "./pages/resident/PaymentPage";
+import MessNotices from "./pages/admin/MessNotices";
+import Complaints from "./pages/resident/Complaints";
+import RoomShift from "./pages/resident/RoomShift";
+import Feedback from "./pages/resident/Feedback";
 function App() {
   return (
-    <BrowserRouter>
-      <Routes>
-        {/* Default */}
-        <Route path="/" element={<Navigate to="/login" />} />
+    <Routes>
+      <Route path="/" element={<Home />} />
+      <Route path="/login" element={<Login />} />
+      <Route path="/register/admin" element={<AdminRegister />} />
+      <Route path="/register/resident" element={<ResidentRegister />} />
 
-        {/* Login */}
-        <Route path="/login" element={<Login />} />
+      {/* SuperAdmin Routes */}
+      <Route
+        path="/superadmin/dashboard"
+        element={
+          <ProtectedRoute allowedRoles={["SUPER_ADMIN"]}>
+            <SuperAdminDashboard />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/superadmin/admins"
+        element={
+          <ProtectedRoute allowedRoles={["SUPER_ADMIN"]}>
+            <AdminManagement />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/superadmin/hostels"
+        element={
+          <ProtectedRoute allowedRoles={["SUPER_ADMIN"]}>
+            <HostelManagement />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/superadmin/notifications"
+        element={
+          <ProtectedRoute allowedRoles={["SUPER_ADMIN"]}>
+            <Notifications />
+          </ProtectedRoute>
+        }
+      />
 
-        {/* Hostel Registration */}
-        <Route path="/hostel/register" element={<HostelRegistration />} />
+      {/* Admin Routes */}
+      <Route
+        path="/admin/dashboard"
+        element={
+          <ProtectedRoute allowedRoles={["ADMIN"]}>
+            <AdminDashboard />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/admin/hostels/register"
+        element={
+          <ProtectedRoute allowedRoles={["ADMIN"]}>
+            <HostelRegistration />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/admin/mess-notices"
+        element={
+          <ProtectedRoute allowedRoles={["ADMIN"]}>
+            <MessNotices />
+          </ProtectedRoute>
+        }
+      />
 
-        {/* ================= SUPER ADMIN ================= */}
-
-        <Route
-          path="/superadmin/dashboard"
-          element={
-            <PrivateRoute>
-              <Dashboard />
-            </PrivateRoute>
-          }
-        />
-
-        <Route
-          path="/superadmin/admins"
-          element={
-            <PrivateRoute>
-              <AdminList />
-            </PrivateRoute>
-          }
-        />
-
-        <Route
-          path="/superadmin/add-admin"
-          element={
-            <PrivateRoute>
-              <AddAdmin />
-            </PrivateRoute>
-          }
-        />
-
-        <Route
-          path="/superadmin/edit-admin/:id"
-          element={
-            <PrivateRoute>
-              <EditAdmin />
-            </PrivateRoute>
-          }
-        />
-
-        <Route
-          path="/superadmin/pending-hostels"
-          element={
-            <PrivateRoute>
-              <PendingHostels />
-            </PrivateRoute>
-          }
-        />
-
-        <Route
-          path="/superadmin/hostels"
-          element={
-            <PrivateRoute>
-              <ApprovedHostels />
-            </PrivateRoute>
-          }
-        />
-
-        {/* ================= ADMIN ================= */}
-
-        <Route
-          path="/admin/dashboard"
-          element={
-            <PrivateRoute>
-              <AdminDashboard />
-            </PrivateRoute>
-          }
-        />
-
-        <Route
-          path="/admin/pending-residents"
-          element={
-            <PrivateRoute>
-              <PendingResidents />
-            </PrivateRoute>
-          }
-        />
-
-        <Route
-          path="/admin/approved-residents"
-          element={
-            <PrivateRoute>
-              <ApprovedResidents />
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="/admin/resident/:id"
-          element={
-            <PrivateRoute>
-              <ResidentDetails />
-            </PrivateRoute>
-          }
-        />
-
-        <Route
-          path="/admin/edit-resident/:id"
-          element={
-            <PrivateRoute>
-              <EditResident />
-            </PrivateRoute>
-          }
-        />
-
-        <Route
-          path="/admin/rooms"
-          element={
-            <PrivateRoute>
-              <RoomList />
-            </PrivateRoute>
-          }
-        />
-
-        <Route
-          path="/admin/rooms/add"
-          element={
-            <PrivateRoute>
-              <AddRoom />
-            </PrivateRoute>
-          }
-        />
-
-        <Route
-          path="/admin/rooms/edit/:id"
-          element={
-            <PrivateRoute>
-              <EditRoom />
-            </PrivateRoute>
-          }
-        />
-        <Route path="/admin/beds" element={<BedList />} />
-
-        <Route path="/admin/beds/add" element={<AddBed />} />
-
-        <Route path="/admin/beds/edit/:id" element={<EditBed />} />
-      </Routes>
-    </BrowserRouter>
+      {/* Resident Routes */}
+      <Route
+        path="/resident/dashboard"
+        element={
+          <ProtectedRoute allowedRoles={["RESIDENT"]}>
+            <ResidentDashboard />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/admin/rooms"
+        element={
+          <ProtectedRoute allowedRoles={["ADMIN"]}>
+            <RoomsBeds />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/admin/residents"
+        element={
+          <ProtectedRoute allowedRoles={["ADMIN"]}>
+            <ResidentManagement />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/admin/requests"
+        element={
+          <ProtectedRoute allowedRoles={["ADMIN"]}>
+            <ManageRequests />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/resident/payment"
+        element={
+          <ProtectedRoute allowedRoles={["RESIDENT"]}>
+            <PaymentPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/resident/complaints"
+        element={
+          <ProtectedRoute allowedRoles={["RESIDENT"]}>
+            <Complaints />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/resident/shift"
+        element={
+          <ProtectedRoute allowedRoles={["RESIDENT"]}>
+            <RoomShift />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/resident/feedback"
+        element={
+          <ProtectedRoute allowedRoles={["RESIDENT"]}>
+            <Feedback />
+          </ProtectedRoute>
+        }
+      />
+      <Route path="*" element={<Navigate to="/" />} />
+    </Routes>
   );
 }
-
 export default App;

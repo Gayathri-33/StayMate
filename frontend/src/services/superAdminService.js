@@ -1,15 +1,19 @@
 import api from "./api";
 
-const superAdminService = {
-
-  addAdmin: async (admin) => {
-    return await api.post("/superadmin/admins", admin);
-  },
-
-  getAllAdmins: async () => {
-    return await api.get("/superadmin/admins");
-  }
-
+const superadminService = {
+  getDashboard: () => api.get("/superadmin/dashboard"),
+  getPendingAdmins: () => api.get("/superadmin/admins/pending"),
+  getApprovedAdmins: () => api.get("/superadmin/admins/approved"),
+  getRejectedAdmins: () => api.get("/superadmin/admins/rejected"),
+  approveAdmin: (id) => api.put(`/superadmin/admins/approve/${id}`),
+  rejectAdmin: (id) => api.put(`/superadmin/admins/reject/${id}`),
+  
+  getPendingHostels: () => api.get("/superadmin/hostels/pending"),
+  getApprovedHostels: () => api.get("/superadmin/hostels/approved"),
+  approveHostel: (id) => api.put(`/superadmin/hostels/approve/${id}`),
+  rejectHostel: (id) => api.put(`/superadmin/hostels/reject/${id}`),
+  
+  getNotifications: () => api.get("/superadmin/notifications"),
+  markNotificationRead: (id) => api.put(`/superadmin/notifications/read/${id}`),
 };
-
-export default superAdminService;
+export default superadminService;

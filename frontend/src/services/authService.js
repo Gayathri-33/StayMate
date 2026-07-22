@@ -1,45 +1,29 @@
+
 import api from "./api";
 
 const authService = {
+  login: (loginData) => api.post("/auth/login", loginData),
 
-    login: async (loginData) => {
+  registerAdmin: (adminData) => api.post("/auth/register/admin", adminData),
 
-        return await api.post("/auth/login", loginData);
+  saveAuthData: (token, user) => {
+    localStorage.setItem("token", token);
+    localStorage.setItem("user", JSON.stringify(user));
+  },
 
-    },
+  logout: () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+  },
 
-    logout: () => {
+  getUser: () => {
+    const raw = localStorage.getItem("user");
+    return raw ? JSON.parse(raw) : null;
+  },
 
-        localStorage.removeItem("token");
-        localStorage.removeItem("user");
+  getToken: () => localStorage.getItem("token"),
 
-    },
-
-    saveAuthData: (token, user) => {
-
-        localStorage.setItem("token", token);
-        localStorage.setItem("user", JSON.stringify(user));
-
-    },
-
-    getToken: () => {
-
-        return localStorage.getItem("token");
-
-    },
-
-    getUser: () => {
-
-        return JSON.parse(localStorage.getItem("user"));
-
-    },
-
-    isAuthenticated: () => {
-
-        return localStorage.getItem("token") !== null;
-
-    }
-
+  isAuthenticated: () => !!localStorage.getItem("token"),
 };
 
 export default authService;

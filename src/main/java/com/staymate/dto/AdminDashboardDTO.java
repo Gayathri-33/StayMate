@@ -1,56 +1,42 @@
 package com.staymate.dto;
 
-public class AdminDashboardDTO {
+import java.util.List;
 
+public class AdminDashboardDTO {
+    private int hostelCount;
+    private List<HostelSummaryDTO> hostels; // shown if hostelCount > 1
+    private HostelSummaryDTO singleHostel;  // shown if hostelCount == 1
     private long totalResidents;
     private long totalRooms;
-    private long occupiedRooms;
-    private long availableRooms;
-    private long pendingRequests;
+    private long occupiedBeds;
+    private long availableBeds;
     private long pendingComplaints;
-    private double feeCollected;
-	public long getTotalResidents() {
-		return totalResidents;
-	}
-	public void setTotalResidents(long totalResidents) {
-		this.totalResidents = totalResidents;
-	}
-	public long getTotalRooms() {
-		return totalRooms;
-	}
-	public void setTotalRooms(long totalRooms) {
-		this.totalRooms = totalRooms;
-	}
-	public long getOccupiedRooms() {
-		return occupiedRooms;
-	}
-	public void setOccupiedRooms(long occupiedRooms) {
-		this.occupiedRooms = occupiedRooms;
-	}
-	public long getAvailableRooms() {
-		return availableRooms;
-	}
-	public void setAvailableRooms(long availableRooms) {
-		this.availableRooms = availableRooms;
-	}
-	public long getPendingRequests() {
-		return pendingRequests;
-	}
-	public void setPendingRequests(long pendingRequests) {
-		this.pendingRequests = pendingRequests;
-	}
-	public long getPendingComplaints() {
-		return pendingComplaints;
-	}
-	public void setPendingComplaints(long pendingComplaints) {
-		this.pendingComplaints = pendingComplaints;
-	}
-	public double getFeeCollected() {
-		return feeCollected;
-	}
-	public void setFeeCollected(double feeCollected) {
-		this.feeCollected = feeCollected;
-	}
+    private long resolvedComplaints;
+    private double feesCollected;
 
-    
+    public AdminDashboardDTO(int hostelCount, List<HostelSummaryDTO> hostels, HostelSummaryDTO singleHostel,
+                              long totalResidents, long totalRooms, long occupiedBeds, long availableBeds,
+                              long pendingComplaints, long resolvedComplaints, double feesCollected) {
+        this.hostelCount = hostelCount;
+        this.hostels = hostels;
+        this.singleHostel = singleHostel;
+        this.totalResidents = totalResidents;
+        this.totalRooms = totalRooms;
+        this.occupiedBeds = occupiedBeds;
+        this.availableBeds = availableBeds;
+        this.pendingComplaints = pendingComplaints;
+        this.resolvedComplaints = resolvedComplaints;
+        this.feesCollected = feesCollected;
+    }
+
+    public int getHostelCount() { return hostelCount; }
+    public List<HostelSummaryDTO> getHostels() { return hostels; }
+    public HostelSummaryDTO getSingleHostel() { return singleHostel; }
+    public long getTotalResidents() { return totalResidents; }
+    public long getTotalRooms() { return totalRooms; }
+    public long getOccupiedBeds() { return occupiedBeds; }
+    public long getAvailableBeds() { return availableBeds; }
+    public long getPendingComplaints() { return pendingComplaints; }
+    public long getResolvedComplaints() { return resolvedComplaints; }
+    public double getFeesCollected() { return feesCollected; }
 }

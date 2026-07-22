@@ -1,13 +1,9 @@
 package com.staymate.repository;
-
+import com.staymate.entity.Room;
+import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
-import org.springframework.data.jpa.repository.JpaRepository;
-
-import com.staymate.entity.Room;
-
 public interface RoomRepository extends JpaRepository<Room, Long> {
-
-    List<Room> findByHostelCode(String hostelCode);
-
+    List<Room> findByHostel_HostelId(Long hostelId);
+    List<Room> findByHostel_HostelCode(String hostelCode);
 }

@@ -1,48 +1,118 @@
 package com.staymate.controller;
 
-import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
+import com.staymate.enums.AdminStatus;
+import com.staymate.enums.HostelStatus;
+import com.staymate.service.SuperAdminService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import com.staymate.entity.User;
-import com.staymate.service.SuperAdminService;
+import java.util.Map;
 
 @RestController
-@RequestMapping("/superadmin")
-@CrossOrigin(origins = "http://localhost:5173")
+@RequestMapping("/api/superadmin")
 public class SuperAdminController {
 
-    @Autowired
-    private SuperAdminService superAdminService;
+    private final SuperAdminService superAdminService;
 
-    // Add Admin
-    @PostMapping("/admins")
-    public User addAdmin(@RequestBody User user) {
-        return superAdminService.addAdmin(user);
+    public SuperAdminController(SuperAdminService superAdminService) {
+        this.superAdminService = superAdminService;
     }
 
-    // Get All Admins
-    @GetMapping("/admins")
-    public List<User> getAllAdmins() {
-        return superAdminService.getAllAdmins();
+    // ---- Admins ----
+
+    @GetMapping("/admins/pending")
+    public ResponseEntity<?> pendingAdmins() {
+        return ResponseEntity.ok(superAdminService.getAdminsByStatus(AdminStatus.PENDING));
     }
 
-    // Get Admin By ID
-    @GetMapping("/admins/{id}")
-    public User getAdminById(@PathVariable Long id) {
-        return superAdminService.getAdminById(id);
+    @GetMapping("/admins/approved")
+    public ResponseEntity<?> approvedAdmins() {
+        return ResponseEntity.ok(superAdminService.getAdminsByStatus(AdminStatus.APPROVED));
     }
 
-    // Update Admin
-    @PutMapping("/admins/{id}")
-    public User updateAdmin(@PathVariable Long id, @RequestBody User user) {
-        return superAdminService.updateAdmin(id, user);
+    @GetMapping("/admins/rejected")
+    public ResponseEntity<?> rejectedAdmins() {
+        return ResponseEntity.ok(superAdminService.getAdminsByStatus(AdminStatus.REJECTED));
     }
 
-    // Delete Admin
-    @DeleteMapping("/admins/{id}")
-    public void deleteAdmin(@PathVariable Long id) {
-        superAdminService.deleteAdmin(id);
+    @PutMapping("/admins/approve/{userId}")
+    public ResponseEntity<?> approveAdmin(@PathVariable Long userId) {
+        try {
+            superAdminService.approveAdmin(userId);
+            return ResponseEntity.ok(Map.of("message", "Admin approved"));
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+        }
+    }
+
+    @PutMapping("/admins/reject/{userId}")
+    public ResponseEntity<?> rejectAdmin(@PathVariable Long userId) {
+        try {
+            superAdminService.rejectAdmin(userId);
+            return ResponseEntity.ok(Map.of("message", "Admin rejected"));
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+        }
+    }
+
+    // ---- Hostels ----
+
+    @GetMapping("/hostels/pending")
+    public ResponseEntity<?> pendingHostels() {
+        return ResponseEntity.ok(superAdminService.getHostelsByStatus(HostelStatus.PENDING));
+    }
+
+    @GetMapping("/hostels/approved")
+    public ResponseEntity<?> approvedHostels() {
+        return ResponseEntity.ok(superAdminService.getHostelsByStatus(HostelStatus.APPROVED));
+    }
+
+    @GetMapping("/hostels/rejected")
+    public ResponseEntity<?> rejectedHostels() {
+        return ResponseEntity.ok(superAdminService.getHostelsByStatus(HostelStatus.REJECTED));
+    }
+
+    @PutMapping("/hostels/approve/{hostelId}")
+    public ResponseEntity<?> approveHostel(@PathVariable Long hostelId) {
+        try {
+            String code = superAdminService.approveHostel(hostelId);
+            return ResponseEntity.ok(Map.of("message", "Hostel approved", "hostelCode", code));
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+        }
+    }
+
+    @PutMapping("/hostels/reject/{hostelId}")
+    public ResponseEntity<?> rejectHostel(@PathVariable Long hostelId) {
+        try {
+            superAdminService.rejectHostel(hostelId);
+            return ResponseEntity.ok(Map.of("message", "Hostel rejected"));
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+        }
+    }
+
+    // ---- Dashboard ----
+
+    @GetMapping("/dashboard")
+    public ResponseEntity<?> dashboard() {
+        return ResponseEntity.ok(superAdminService.getDashboardStats());
+    }
+
+    // ---- Notifications ----
+
+    @GetMapping("/notifications")
+    public ResponseEntity<?> notifications() {
+        return ResponseEntity.ok(superAdminService.getNotifications());
+    }
+
+    @PutMapping("/notifications/read/{id}")
+    public ResponseEntity<?> markRead(@PathVariable Long id) {
+        try {
+            superAdminService.markNotificationRead(id);
+            return ResponseEntity.ok(Map.of("message", "Marked as read"));
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+        }
     }
 }

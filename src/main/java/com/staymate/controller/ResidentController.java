@@ -1,68 +1,85 @@
 package com.staymate.controller;
 
-import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
+import com.staymate.dto.*;
+import com.staymate.entity.*;
+import com.staymate.service.ResidentService;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
-import com.staymate.dto.ResidentRegistrationDTO;
-import com.staymate.entity.Resident;
-import com.staymate.service.ResidentService;
+import java.util.Map;
 
 @RestController
-@RequestMapping("/residents")
-@CrossOrigin(origins = "http://localhost:5173")
+@RequestMapping("/api/residents")
 public class ResidentController {
 
-    @Autowired
-    private ResidentService residentService;
+    private final ResidentService residentService;
+
+    public ResidentController(ResidentService residentService) {
+        this.residentService = residentService;
+    }
+
+    private Long currentUserId(Authentication auth) {
+        return ((User) auth.getPrincipal()).getUserId();
+    }
+
+    // ---- Public: hostel search + registration ----
+
+    @GetMapping("/search/place")
+    public ResponseEntity<?> searchByPlace(@RequestParam String place) {
+        return ResponseEntity.ok(residentService.searchByPlace(place));
+    }
+
+    @GetMapping("/search/code/{hostelCode}")
+    public ResponseEntity<?> searchByCode(@PathVariable String hostelCode) {
+        try {
+            return ResponseEntity.ok(residentService.searchByCode(hostelCode));
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+        }
+    }
+
+    @GetMapping("/rooms/available/{hostelCode}")
+    public ResponseEntity<?> availableRooms(@PathVariable String hostelCode) {
+        return ResponseEntity.ok(residentService.getAvailableRooms(hostelCode));
+    }
+
+    @GetMapping("/beds/available/{roomId}")
+    public ResponseEntity<?> availableBeds(@PathVariable Long roomId) {
+        return ResponseEntity.ok(residentService.getAvailableBeds(roomId));
+    }
 
     @PostMapping("/register")
-    public Resident registerResident(@RequestBody ResidentRegistrationDTO dto) {
-        return residentService.registerResident(dto);
+    public ResponseEntity<?> register(@RequestBody ResidentRegisterRequest req) {
+        try {
+            User user = residentService.register(req);
+            return ResponseEntity.ok(Map.of(
+                    "message", "Registration successful. Please log in to complete your payment.",
+                    "userId", user.getUserId()
+            ));
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+        }
     }
 
-    @GetMapping("/pending")
-    public List<Resident> getPendingResidents() {
-        return residentService.getPendingResidents();
+    // ---- Protected: resident dashboard + feedback ----
+
+    @GetMapping("/dashboard")
+    public ResponseEntity<?> dashboard(Authentication auth) {
+        try {
+            return ResponseEntity.ok(residentService.getDashboard(currentUserId(auth)));
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+        }
     }
 
-    @GetMapping("/approved")
-    public List<Resident> getApprovedResidents() {
-        return residentService.getApprovedResidents();
+    @PostMapping("/feedback")
+    public ResponseEntity<?> submitFeedback(Authentication auth, @RequestBody FeedbackRequest req) {
+        try {
+            residentService.submitFeedback(currentUserId(auth), req);
+            return ResponseEntity.ok(Map.of("message", "Feedback submitted"));
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+        }
     }
-
-    @PutMapping("/approve/{id}")
-    public Resident approveResident(@PathVariable Long id) {
-        return residentService.approveResident(id);
-    }
-
-    @DeleteMapping("/reject/{id}")
-    public Resident rejectResident(@PathVariable Long id) {
-        return residentService.rejectResident(id);
-    }
-    @GetMapping("/{id}")
-    public Resident getResident(@PathVariable Long id) {
-
-        return residentService.getResidentById(id);
-
-    }
-
-    @PutMapping("/update/{id}")
-    public Resident updateResident(
-            @PathVariable Long id,
-            @RequestBody ResidentRegistrationDTO dto) {
-
-        return residentService.updateResident(id, dto);
-
-    }
-
-    @DeleteMapping("/delete/{id}")
-    public void deleteResident(@PathVariable Long id) {
-
-        residentService.deleteResident(id);
-
-    }
-    
-
 }

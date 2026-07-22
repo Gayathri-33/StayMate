@@ -1,205 +1,51 @@
 package com.staymate.entity;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-
-import com.staymate.enums.Status;
-
+import com.staymate.enums.PaymentStatus;
+import com.staymate.enums.ResidentStatus;
 import jakarta.persistence.*;
+import java.time.LocalDate;
 
 @Entity
 @Table(name = "residents")
 public class Resident {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long residentId;
 
-    
+    @Column(unique = true)
     private String residentCode;
 
-    @Column(nullable = false)
-    private String fullName;
+    @OneToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 
-    @Column(nullable = false)
-    private String gender;
+    @ManyToOne
+    @JoinColumn(name = "hostel_id")
+    private Hostel hostel;
 
-    private LocalDate dateOfBirth;
-
-    @Column(nullable = false)
-    private String phone;
-
-    @Column(nullable = false, unique = true)
-    private String email;
-
-    @Column(nullable = false)
-    private String password;
-
-    @Column(nullable = false, unique = true)
-    private String aadhaarNumber;
-
-    @Column(nullable = false)
-    private String parentName;
-
-    @Column(nullable = false)
-    private String parentPhone;
-
-    @Column(nullable = false)
-    private String address;
-
-    private String collegeOrCompany;
-
-    private String emergencyContact;
-
-    @Column(nullable = false)
-    private String hostelCode;
+    private LocalDate registrationDate;
+    private LocalDate paymentDueDate;
 
     @Enumerated(EnumType.STRING)
-    private Status status;
+    private ResidentStatus status = ResidentStatus.PENDING_PAYMENT;
 
-    private LocalDateTime createdAt;
+    @Enumerated(EnumType.STRING)
+    private PaymentStatus paymentStatus = PaymentStatus.PENDING;
 
-    @PrePersist
-    public void onCreate() {
-        createdAt = LocalDateTime.now();
-    }
-
-    public Resident() {
-    }
-
-    public Long getResidentId() {
-        return residentId;
-    }
-
-    public void setResidentId(Long residentId) {
-        this.residentId = residentId;
-    }
-
-    public String getResidentCode() {
-        return residentCode;
-    }
-
-    public void setResidentCode(String residentCode) {
-        this.residentCode = residentCode;
-    }
-
-    public String getFullName() {
-        return fullName;
-    }
-
-    public void setFullName(String fullName) {
-        this.fullName = fullName;
-    }
-
-    public String getGender() {
-        return gender;
-    }
-
-    public void setGender(String gender) {
-        this.gender = gender;
-    }
-
-    public LocalDate getDateOfBirth() {
-        return dateOfBirth;
-    }
-
-    public void setDateOfBirth(LocalDate dateOfBirth) {
-        this.dateOfBirth = dateOfBirth;
-    }
-
-    public String getPhone() {
-        return phone;
-    }
-
-    public void setPhone(String phone) {
-        this.phone = phone;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public String getAadhaarNumber() {
-        return aadhaarNumber;
-    }
-
-    public void setAadhaarNumber(String aadhaarNumber) {
-        this.aadhaarNumber = aadhaarNumber;
-    }
-
-    public String getParentName() {
-        return parentName;
-    }
-
-    public void setParentName(String parentName) {
-        this.parentName = parentName;
-    }
-
-    public String getParentPhone() {
-        return parentPhone;
-    }
-
-    public void setParentPhone(String parentPhone) {
-        this.parentPhone = parentPhone;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
-    public String getCollegeOrCompany() {
-        return collegeOrCompany;
-    }
-
-    public void setCollegeOrCompany(String collegeOrCompany) {
-        this.collegeOrCompany = collegeOrCompany;
-    }
-
-    public String getEmergencyContact() {
-        return emergencyContact;
-    }
-
-    public void setEmergencyContact(String emergencyContact) {
-        this.emergencyContact = emergencyContact;
-    }
-
-    public String getHostelCode() {
-        return hostelCode;
-    }
-
-    public void setHostelCode(String hostelCode) {
-        this.hostelCode = hostelCode;
-    }
-
-    public Status getStatus() {
-        return status;
-    }
-
-    public void setStatus(Status status) {
-        this.status = status;
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
+    // getters/setters
+    public Long getResidentId() { return residentId; }
+    public void setResidentId(Long residentId) { this.residentId = residentId; }
+    public String getResidentCode() { return residentCode; }
+    public void setResidentCode(String residentCode) { this.residentCode = residentCode; }
+    public User getUser() { return user; }
+    public void setUser(User user) { this.user = user; }
+    public Hostel getHostel() { return hostel; }
+    public void setHostel(Hostel hostel) { this.hostel = hostel; }
+    public LocalDate getRegistrationDate() { return registrationDate; }
+    public void setRegistrationDate(LocalDate registrationDate) { this.registrationDate = registrationDate; }
+    public LocalDate getPaymentDueDate() { return paymentDueDate; }
+    public void setPaymentDueDate(LocalDate paymentDueDate) { this.paymentDueDate = paymentDueDate; }
+    public ResidentStatus getStatus() { return status; }
+    public void setStatus(ResidentStatus status) { this.status = status; }
+    public PaymentStatus getPaymentStatus() { return paymentStatus; }
+    public void setPaymentStatus(PaymentStatus paymentStatus) { this.paymentStatus = paymentStatus; }
 }
