@@ -1,652 +1,745 @@
 import {
-    useEffect,
-    useState
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
 } from "react";
 
 import {
-    useNavigate
+  useLocation,
+  useNavigate,
 } from "react-router-dom";
+
+import roomAllocationService from "../../../services/roomAllocationService.js";
 
 import "./AllocationStatus.css";
 
-function getResident() {
+const POLLING_INTERVAL = 10000;
 
-    try {
+const normalizeRoomType = (roomType) => {
+  if (!roomType) {
+    return "Not available";
+  }
 
-        return (
-            JSON.parse(
-                localStorage.getItem("resident")
-            ) || {}
-        );
+  const normalizedType = String(roomType)
+    .toUpperCase()
+    .replaceAll("-", "_");
 
-    } catch {
-        return {};
-    }
-}
+  if (
+    normalizedType === "NON_AC" ||
+    normalizedType === "NONAC"
+  ) {
+    return "Non-AC";
+  }
 
-function getRoomRequests() {
+  if (normalizedType === "AC") {
+    return "AC";
+  }
 
-    try {
+  return roomType;
+};
 
-        const savedRequests =
-            localStorage.getItem(
-                "roomAllocationRequests"
-            );
+const normalizeRequest = (
+  response,
+  fallbackRoom = null
+) => {
+  if (!response) {
+    return null;
+  }
 
-        return savedRequests
-            ? JSON.parse(savedRequests)
-            : [];
+  const request = response.data || response;
 
-    } catch {
-        return [];
-    }
-}
+  const room =
+    request.room ||
+    request.requestedRoom ||
+    fallbackRoom ||
+    {};
 
-function findResidentRequest(resident) {
+  const status = String(
+    request.status ||
+      request.requestStatus ||
+      request.allocationStatus ||
+      "PENDING"
+  ).toUpperCase();
 
-    const requests = getRoomRequests();
+  return {
+    ...request,
 
-    return [...requests]
-        .reverse()
-        .find((request) => {
+    id:
+      request.id ||
+      request.requestId ||
+      request.allocationRequestId ||
+      null,
 
-            if (
-                resident.allocationRequestId &&
-                request.id ===
-                resident.allocationRequestId
-            ) {
-                return true;
-            }
+    roomId:
+      request.roomId ||
+      request.requestedRoomId ||
+      room.id ||
+      room.roomId ||
+      null,
 
-            if (
-                resident.residentId &&
-                request.residentId ===
-                resident.residentId
-            ) {
-                return true;
-            }
+    roomNumber:
+      request.roomNumber ||
+      request.requestedRoomNumber ||
+      room.roomNumber ||
+      room.number ||
+      "Not available",
 
-            if (
-                resident.email &&
-                request.email?.toLowerCase() ===
-                resident.email.toLowerCase()
-            ) {
-                return true;
-            }
+    roomType: normalizeRoomType(
+      request.roomType ||
+        request.requestedRoomType ||
+        room.roomType ||
+        room.type
+    ),
 
-            return false;
-        });
-}
+    capacity:
+      request.capacity ||
+      request.roomCapacity ||
+      room.capacity ||
+      room.roomCapacity ||
+      null,
+
+    requestDate:
+      request.requestDate ||
+      request.createdAt ||
+      request.submittedAt ||
+      new Date().toISOString(),
+
+    rejectionReason:
+      request.rejectionReason ||
+      request.rejectReason ||
+      request.reason ||
+      request.adminReason ||
+      "",
+
+    adminNote:
+      request.adminNote ||
+      request.approvalNote ||
+      "",
+
+    status,
+  };
+};
+
+const getStoredResident = () => {
+  try {
+    const storedResident =
+      localStorage.getItem("resident");
+
+    return storedResident
+      ? JSON.parse(storedResident)
+      : null;
+  } catch (error) {
+    console.error(
+      "Unable to read resident information:",
+      error
+    );
+
+    return null;
+  }
+};
 
 function AllocationStatus() {
-
-    const navigate = useNavigate();
-
-    const [resident, setResident] =
-        useState(getResident);
-
-    const [allocationRequest, setAllocationRequest] =
-        useState(() =>
-            findResidentRequest(getResident())
-        );
-
-    const [refreshMessage, setRefreshMessage] =
-        useState("");
-
-    const allocationStatus =
-        allocationRequest?.status ||
-        resident.allocationStatus ||
-        localStorage.getItem("allocationStatus") ||
-        "PENDING";
-
-    const residentName =
-        resident.fullName ||
-        resident.name ||
-        allocationRequest?.residentName ||
-        localStorage.getItem("residentName") ||
-        "Resident";
-
-    const roomNumber =
-        allocationRequest?.roomNumber ||
-        resident.roomNumber ||
-        localStorage.getItem("roomNumber") ||
-        "";
-
-    useEffect(() => {
-
-        if (!allocationRequest) {
-            return;
-        }
-
-        const updatedResident = {
-            ...resident,
-            allocationStatus:
-                allocationRequest.status,
-            allocationRequestId:
-                allocationRequest.id,
-            roomNumber:
-                allocationRequest.roomNumber || ""
-        };
-
-        setResident(updatedResident);
-
-        localStorage.setItem(
-            "resident",
-            JSON.stringify(updatedResident)
-        );
-
-        localStorage.setItem(
-            "allocationStatus",
-            allocationRequest.status
-        );
-
-        if (allocationRequest.roomNumber) {
-
-            localStorage.setItem(
-                "roomNumber",
-                allocationRequest.roomNumber
-            );
-        }
-
-    }, [allocationRequest]);
-
-    const refreshStatus = () => {
-
-        const latestResident = getResident();
-
-        const latestRequest =
-            findResidentRequest(latestResident);
-
-        setResident(latestResident);
-        setAllocationRequest(latestRequest);
-
-        if (latestRequest) {
-
-            setRefreshMessage(
-                `Status refreshed: ${latestRequest.status}`
-            );
-
-        } else {
-
-            setRefreshMessage(
-                "No room allocation request was found."
-            );
-        }
-
-        setTimeout(() => {
-            setRefreshMessage("");
-        }, 2500);
-    };
-
-    const goToDashboard = () => {
-
-        if (allocationStatus !== "APPROVED") {
-            return;
-        }
-
-        navigate("/resident/dashboard");
-    };
-
-    const submitNewRequest = () => {
-
-        const updatedResident = {
-            ...resident,
-            allocationStatus: "NONE",
-            allocationRequestId: "",
-            roomNumber: ""
-        };
-
-        localStorage.setItem(
-            "resident",
-            JSON.stringify(updatedResident)
-        );
-
-        localStorage.setItem(
-            "allocationStatus",
-            "NONE"
-        );
-
-        localStorage.removeItem("roomNumber");
-
-        navigate("/resident/room-request");
-    };
-
-    const handleLogout = () => {
-
-        localStorage.removeItem("token");
-        localStorage.removeItem("role");
-        localStorage.removeItem("user");
-
-        navigate("/login");
-    };
-
-    const statusInformation = {
-
-        PENDING: {
-            label: "Approval Pending",
-            title: "Your request is being reviewed",
-            description:
-                "Your room allocation request has been submitted successfully. The hostel administrator will review your details and assign an available room.",
-            icon: "clock"
-        },
-
-        APPROVED: {
-            label: "Request Approved",
-            title: "Your room has been allocated!",
-            description:
-                "Your request was approved by the hostel administrator. You can now access your Resident Dashboard and use all hostel services.",
-            icon: "approved"
-        },
-
-        REJECTED: {
-            label: "Request Rejected",
-            title: "Your request was not approved",
-            description:
-                "Unfortunately, the hostel administrator could not approve your room allocation request. Review the reason and submit a new request.",
-            icon: "rejected"
-        }
-
-    };
-
-    const currentStatus =
-        statusInformation[allocationStatus] ||
-        statusInformation.PENDING;
-
-    return (
-        <div className="allocation-status-page">
-
-            <div className="status-background-circle status-circle-one"></div>
-            <div className="status-background-circle status-circle-two"></div>
-
-            <header className="allocation-status-header">
-
-                <button
-                    type="button"
-                    className="allocation-status-brand"
-                    onClick={() => navigate("/")}
-                >
-
-                    <span className="status-brand-icon">
-
-                        <svg viewBox="0 0 24 24" aria-hidden="true">
-                            <path
-                                d="M4 21V6.5C4 5.67 4.67 5 5.5 5H14V21M14 9H18.5C19.33 9 20 9.67 20 10.5V21M2 21H22M8 9H10M8 13H10M8 17H10M17 13H18M17 17H18"
-                                fill="none"
-                                stroke="currentColor"
-                                strokeWidth="1.8"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                            />
-                        </svg>
-
-                    </span>
-
-                    <span>
-                        <strong>StayMate</strong>
-                        <small>Resident Portal</small>
-                    </span>
-
-                </button>
-
-                <div className="status-header-user">
-
-                    <span className="status-user-avatar">
-                        {residentName
-                            .charAt(0)
-                            .toUpperCase()}
-                    </span>
-
-                    <div>
-                        <strong>{residentName}</strong>
-                        <small>Resident</small>
-                    </div>
-
-                    <button
-                        type="button"
-                        onClick={handleLogout}
-                    >
-                        Logout
-                    </button>
-
-                </div>
-
-            </header>
-
-            <main className="allocation-status-main">
-
-                <section className="allocation-status-container">
-
-                    <div className="allocation-status-progress">
-
-                        <div className="status-progress-item completed">
-                            <span>✓</span>
-                            <p>Registration</p>
-                        </div>
-
-                        <div className="status-progress-line completed"></div>
-
-                        <div className="status-progress-item completed">
-                            <span>✓</span>
-                            <p>Login</p>
-                        </div>
-
-                        <div className="status-progress-line completed"></div>
-
-                        <div className="status-progress-item completed">
-                            <span>✓</span>
-                            <p>Room Request</p>
-                        </div>
-
-                        <div
-                            className={`status-progress-line ${
-                                allocationStatus === "APPROVED"
-                                    ? "completed"
-                                    : ""
-                            }`}
-                        ></div>
-
-                        <div
-                            className={`status-progress-item ${
-                                allocationStatus === "APPROVED"
-                                    ? "completed"
-                                    : "active"
-                            }`}
-                        >
-                            <span>
-                                {allocationStatus === "APPROVED"
-                                    ? "✓"
-                                    : "4"}
-                            </span>
-
-                            <p>Admin Approval</p>
-                        </div>
-
-                    </div>
-
-                    <div
-                        className={`allocation-status-result status-${allocationStatus.toLowerCase()}`}
-                    >
-
-                        <div className="allocation-status-icon">
-
-                            {currentStatus.icon === "clock" && (
-
-                                <svg
-                                    viewBox="0 0 24 24"
-                                    aria-hidden="true"
-                                >
-                                    <circle
-                                        cx="12"
-                                        cy="12"
-                                        r="9"
-                                        fill="none"
-                                        stroke="currentColor"
-                                        strokeWidth="1.7"
-                                    />
-
-                                    <path
-                                        d="M12 7V12L15.5 14"
-                                        fill="none"
-                                        stroke="currentColor"
-                                        strokeWidth="1.7"
-                                        strokeLinecap="round"
-                                    />
-                                </svg>
-
-                            )}
-
-                            {currentStatus.icon === "approved" && (
-
-                                <svg
-                                    viewBox="0 0 24 24"
-                                    aria-hidden="true"
-                                >
-                                    <circle
-                                        cx="12"
-                                        cy="12"
-                                        r="9"
-                                        fill="none"
-                                        stroke="currentColor"
-                                        strokeWidth="1.7"
-                                    />
-
-                                    <path
-                                        d="M8 12L11 15L16.5 9"
-                                        fill="none"
-                                        stroke="currentColor"
-                                        strokeWidth="1.9"
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                    />
-                                </svg>
-
-                            )}
-
-                            {currentStatus.icon === "rejected" && (
-
-                                <svg
-                                    viewBox="0 0 24 24"
-                                    aria-hidden="true"
-                                >
-                                    <circle
-                                        cx="12"
-                                        cy="12"
-                                        r="9"
-                                        fill="none"
-                                        stroke="currentColor"
-                                        strokeWidth="1.7"
-                                    />
-
-                                    <path
-                                        d="M9 9L15 15M15 9L9 15"
-                                        fill="none"
-                                        stroke="currentColor"
-                                        strokeWidth="1.9"
-                                        strokeLinecap="round"
-                                    />
-                                </svg>
-
-                            )}
-
-                        </div>
-
-                        <span className="allocation-status-label">
-                            {currentStatus.label}
-                        </span>
-
-                        <h1>{currentStatus.title}</h1>
-
-                        <p className="allocation-status-description">
-                            {currentStatus.description}
-                        </p>
-
-                        {allocationStatus === "PENDING" && (
-
-                            <div className="pending-status-information">
-
-                                <div>
-                                    <span>Request ID</span>
-
-                                    <strong>
-                                        {allocationRequest?.id ||
-                                            "Not available"}
-                                    </strong>
-                                </div>
-
-                                <div>
-                                    <span>Requested Date</span>
-
-                                    <strong>
-                                        {allocationRequest
-                                            ?.requestedDate ||
-                                            "Not available"}
-                                    </strong>
-                                </div>
-
-                                <div>
-                                    <span>Preferred Room</span>
-
-                                    <strong>
-                                        {allocationRequest
-                                            ?.preferredRoomType ||
-                                            "Not available"}
-                                    </strong>
-                                </div>
-
-                            </div>
-
-                        )}
-
-                        {allocationStatus === "APPROVED" && (
-
-                            <div className="approved-room-card">
-
-                                <span className="approved-room-icon">
-
-                                    <svg
-                                        viewBox="0 0 24 24"
-                                        aria-hidden="true"
-                                    >
-                                        <path
-                                            d="M4 21V5H18V21M2 21H21M8 9H14M8 13H14M8 17H12M15 17H16"
-                                            fill="none"
-                                            stroke="currentColor"
-                                            strokeWidth="1.7"
-                                            strokeLinecap="round"
-                                        />
-                                    </svg>
-
-                                </span>
-
-                                <div>
-                                    <p>Your Allocated Room</p>
-                                    <h2>Room {roomNumber}</h2>
-
-                                    <span>
-                                        {
-                                            allocationRequest
-                                                ?.preferredRoomType
-                                        }
-                                    </span>
-                                </div>
-
-                            </div>
-
-                        )}
-
-                        {allocationStatus === "REJECTED" && (
-
-                            <div className="rejection-reason">
-
-                                <span>Reason from administrator</span>
-
-                                <p>
-                                    {allocationRequest
-                                        ?.rejectionReason ||
-                                        "Your request could not be approved at this time."}
-                                </p>
-
-                            </div>
-
-                        )}
-
-                        {refreshMessage && (
-
-                            <p className="status-refresh-message">
-                                {refreshMessage}
-                            </p>
-
-                        )}
-
-                        <div className="allocation-status-actions">
-
-                            {allocationStatus === "PENDING" && (
-
-                                <button
-                                    type="button"
-                                    className="status-refresh-button"
-                                    onClick={refreshStatus}
-                                >
-
-                                    <svg
-                                        viewBox="0 0 24 24"
-                                        aria-hidden="true"
-                                    >
-                                        <path
-                                            d="M20 7V3L18 5C16.4 3.7 14.3 3 12 3C7 3 3 7 3 12C3 17 7 21 12 21C16 21 19.3 18.4 20.5 15"
-                                            fill="none"
-                                            stroke="currentColor"
-                                            strokeWidth="1.7"
-                                            strokeLinecap="round"
-                                            strokeLinejoin="round"
-                                        />
-                                    </svg>
-
-                                    Refresh Status
-
-                                </button>
-
-                            )}
-
-                            {allocationStatus === "APPROVED" && (
-
-                                <button
-                                    type="button"
-                                    className="status-dashboard-button"
-                                    onClick={goToDashboard}
-                                >
-                                    Go to Resident Dashboard
-                                    <span>→</span>
-                                </button>
-
-                            )}
-
-                            {allocationStatus === "REJECTED" && (
-
-                                <button
-                                    type="button"
-                                    className="status-new-request-button"
-                                    onClick={submitNewRequest}
-                                >
-                                    Submit New Request
-                                    <span>→</span>
-                                </button>
-
-                            )}
-
-                        </div>
-
-                    </div>
-
-                    <div className="allocation-help-section">
-
-                        <span className="allocation-help-icon">
-                            i
-                        </span>
-
-                        <div>
-                            <h2>Need help?</h2>
-
-                            <p>
-                                Contact your hostel administrator if
-                                your request remains pending for a
-                                long time or if you need to update
-                                your details.
-                            </p>
-                        </div>
-
-                    </div>
-
-                </section>
-
-            </main>
-
-            <footer className="allocation-status-footer">
-                © 2026 StayMate. Smart hostel management made simple.
-            </footer>
-
-        </div>
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const fallbackRoomRef = useRef(
+    location.state?.selectedRoom || null
+  );
+
+  const initialRequest =
+    location.state?.newRequest
+      ? normalizeRequest(
+          location.state.newRequest,
+          fallbackRoomRef.current
+        )
+      : null;
+
+  const [request, setRequest] =
+    useState(initialRequest);
+
+  const [loading, setLoading] = useState(
+    !initialRequest
+  );
+
+  const [refreshing, setRefreshing] =
+    useState(false);
+
+  const [error, setError] = useState("");
+
+  const [lastUpdated, setLastUpdated] =
+    useState(
+      initialRequest ? new Date() : null
     );
+
+  /*
+   * Get the latest allocation status from Spring Boot.
+   */
+  const refreshRequest = useCallback(
+    async (silent = false) => {
+      if (silent) {
+        setRefreshing(true);
+      } else {
+        setLoading(true);
+      }
+
+      try {
+        const response =
+          await roomAllocationService.getLatestRequest();
+
+        setRequest((previousRequest) =>
+          normalizeRequest(
+            response,
+            previousRequest ||
+              fallbackRoomRef.current
+          )
+        );
+
+        setLastUpdated(new Date());
+        setError("");
+      } catch (requestError) {
+        console.error(
+          "Unable to refresh allocation status:",
+          requestError
+        );
+
+        setError(
+          requestError.message ||
+            "Unable to check your room-allocation status."
+        );
+      } finally {
+        setLoading(false);
+        setRefreshing(false);
+      }
+    },
+    []
+  );
+
+  /*
+   * Check the backend when the page opens.
+   */
+  useEffect(() => {
+    refreshRequest(Boolean(initialRequest));
+  }, [refreshRequest]);
+
+  /*
+   * Poll the backend every 10 seconds while the
+   * request is pending.
+   */
+  useEffect(() => {
+    if (request?.status !== "PENDING") {
+      return undefined;
+    }
+
+    const pollingTimer = window.setInterval(
+      () => {
+        refreshRequest(true);
+      },
+      POLLING_INTERVAL
+    );
+
+    return () => {
+      window.clearInterval(pollingTimer);
+    };
+  }, [request?.status, refreshRequest]);
+
+  /*
+   * Keep temporary frontend resident information
+   * synchronized with the latest backend status.
+   */
+  useEffect(() => {
+    if (!request?.status) {
+      return;
+    }
+
+    const storedResident = getStoredResident();
+
+    if (!storedResident) {
+      return;
+    }
+
+    const updatedResident = {
+      ...storedResident,
+      allocationStatus: request.status,
+      roomAllocationRequestId: request.id,
+    };
+
+    if (request.status === "APPROVED") {
+      updatedResident.roomAllocated = true;
+      updatedResident.roomId = request.roomId;
+      updatedResident.roomNumber =
+        request.roomNumber;
+    } else {
+      updatedResident.roomAllocated = false;
+    }
+
+    localStorage.setItem(
+      "resident",
+      JSON.stringify(updatedResident)
+    );
+
+    localStorage.setItem(
+      "allocationStatus",
+      request.status
+    );
+  }, [request]);
+
+  const formatRequestDate = (dateValue) => {
+    if (!dateValue) {
+      return "Not available";
+    }
+
+    const date = new Date(dateValue);
+
+    if (Number.isNaN(date.getTime())) {
+      return dateValue;
+    }
+
+    return date.toLocaleString("en-IN", {
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+  };
+
+  const formatLastUpdated = () => {
+    if (!lastUpdated) {
+      return "Not checked yet";
+    }
+
+    return lastUpdated.toLocaleTimeString(
+      "en-IN",
+      {
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+      }
+    );
+  };
+
+  const getStatusContent = () => {
+    switch (request?.status) {
+      case "APPROVED":
+        return {
+          title: "Room Request Approved",
+          description:
+            "Your request has been approved. The selected room is now allocated to you.",
+        };
+
+      case "REJECTED":
+        return {
+          title: "Room Request Rejected",
+          description:
+            "Your room request was not approved. You can review the reason and request another room.",
+        };
+
+      default:
+        return {
+          title: "Request Under Review",
+          description:
+            "Your request has been sent to the hostel administrator and is waiting for approval.",
+        };
+    }
+  };
+
+  const statusContent = getStatusContent();
+
+  const handleMainAction = () => {
+    if (request?.status === "APPROVED") {
+      navigate("/resident/dashboard", {
+        replace: true,
+      });
+
+      return;
+    }
+
+    if (request?.status === "REJECTED") {
+      navigate("/resident/room-request", {
+        replace: true,
+      });
+    }
+  };
+
+  if (loading && !request) {
+    return (
+      <div className="allocation-status-page">
+        <header className="allocation-status-topbar">
+          <button
+            type="button"
+            className="allocation-status-brand"
+            onClick={() => navigate("/")}
+          >
+            <span>S</span>
+            StayMate
+          </button>
+        </header>
+
+        <main className="allocation-status-container">
+          <div className="allocation-status-loading">
+            <div className="allocation-status-spinner" />
+
+            <h2>Checking your request</h2>
+
+            <p>
+              Please wait while we get the latest
+              allocation status.
+            </p>
+          </div>
+        </main>
+      </div>
+    );
+  }
+
+  if (!request) {
+    return (
+      <div className="allocation-status-page">
+        <header className="allocation-status-topbar">
+          <button
+            type="button"
+            className="allocation-status-brand"
+            onClick={() => navigate("/")}
+          >
+            <span>S</span>
+            StayMate
+          </button>
+        </header>
+
+        <main className="allocation-status-container">
+          <section className="allocation-status-empty">
+            <div className="allocation-status-empty-icon">
+              ?
+            </div>
+
+            <h1>No Room Request Found</h1>
+
+            <p>
+              You have not submitted a room-allocation
+              request yet.
+            </p>
+
+            {error && (
+              <div className="allocation-status-inline-error">
+                {error}
+              </div>
+            )}
+
+            <div className="allocation-status-empty-actions">
+              <button
+                type="button"
+                className="allocation-status-secondary-button"
+                onClick={() =>
+                  refreshRequest(false)
+                }
+              >
+                Try Again
+              </button>
+
+              <button
+                type="button"
+                className="allocation-status-primary-button"
+                onClick={() =>
+                  navigate(
+                    "/resident/room-request"
+                  )
+                }
+              >
+                View Available Rooms
+              </button>
+            </div>
+          </section>
+        </main>
+      </div>
+    );
+  }
+
+  return (
+    <div
+      className={`allocation-status-page allocation-status-${request.status.toLowerCase()}`}
+    >
+      <header className="allocation-status-topbar">
+        <button
+          type="button"
+          className="allocation-status-brand"
+          onClick={() => navigate("/")}
+        >
+          <span>S</span>
+          StayMate
+        </button>
+
+        <span className="allocation-status-secure">
+          Room Allocation
+        </span>
+      </header>
+
+      <main className="allocation-status-container">
+        <section className="allocation-status-heading">
+          <p>Allocation Status</p>
+
+          <h1>Track Your Room Request</h1>
+
+          <span>
+            The status will update automatically after
+            the hostel administrator reviews your
+            request.
+          </span>
+        </section>
+
+        {location.state?.successMessage && (
+          <div className="allocation-status-success">
+            <span>✓</span>
+
+            <p>
+              {location.state.successMessage}
+            </p>
+          </div>
+        )}
+
+        {error && (
+          <div
+            className="allocation-status-error"
+            role="alert"
+          >
+            <span>!</span>
+
+            <div>
+              <strong>
+                Status refresh failed
+              </strong>
+
+              <p>{error}</p>
+            </div>
+
+            <button
+              type="button"
+              onClick={() =>
+                refreshRequest(true)
+              }
+            >
+              Retry
+            </button>
+          </div>
+        )}
+
+        <section className="allocation-status-card">
+          <div className="allocation-status-result">
+            <div className="allocation-status-icon">
+              {request.status === "APPROVED" && (
+                <svg
+                  viewBox="0 0 24 24"
+                  aria-hidden="true"
+                >
+                  <path
+                    d="M5 12.5l4 4L19 7"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2.3"
+                  />
+                </svg>
+              )}
+
+              {request.status === "REJECTED" && (
+                <svg
+                  viewBox="0 0 24 24"
+                  aria-hidden="true"
+                >
+                  <path
+                    d="M7 7l10 10M17 7L7 17"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeLinecap="round"
+                    strokeWidth="2.3"
+                  />
+                </svg>
+              )}
+
+              {request.status === "PENDING" && (
+                <svg
+                  viewBox="0 0 24 24"
+                  aria-hidden="true"
+                >
+                  <path
+                    d="M12 7v5l3 2M21 12a9 9 0 1 1-9-9 9 9 0 0 1 9 9Z"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="1.9"
+                  />
+                </svg>
+              )}
+            </div>
+
+            <span className="allocation-status-badge">
+              {request.status}
+            </span>
+
+            <h2>{statusContent.title}</h2>
+
+            <p>{statusContent.description}</p>
+          </div>
+
+          <div className="allocation-status-details">
+            <div className="allocation-status-detail">
+              <span>Requested Room Number</span>
+
+              <strong>
+                Room {request.roomNumber}
+              </strong>
+            </div>
+
+            <div className="allocation-status-detail">
+              <span>Room Type</span>
+
+              <strong>
+                {request.roomType}
+              </strong>
+            </div>
+
+            {request.capacity && (
+              <div className="allocation-status-detail">
+                <span>Room Capacity</span>
+
+                <strong>
+                  {request.capacity}{" "}
+                  {Number(request.capacity) === 1
+                    ? "Person"
+                    : "Persons"}
+                </strong>
+              </div>
+            )}
+
+            <div className="allocation-status-detail">
+              <span>Request Date</span>
+
+              <strong>
+                {formatRequestDate(
+                  request.requestDate
+                )}
+              </strong>
+            </div>
+
+            <div className="allocation-status-detail">
+              <span>Request Status</span>
+
+              <strong
+                className={`allocation-status-text-${request.status.toLowerCase()}`}
+              >
+                {request.status}
+              </strong>
+            </div>
+
+            {request.id && (
+              <div className="allocation-status-detail">
+                <span>Request ID</span>
+
+                <strong>#{request.id}</strong>
+              </div>
+            )}
+          </div>
+
+          {request.status === "REJECTED" && (
+            <div className="allocation-status-rejection">
+              <div>!</div>
+
+              <section>
+                <span>Admin Rejection Reason</span>
+
+                <p>
+                  {request.rejectionReason ||
+                    "No rejection reason was provided by the administrator."}
+                </p>
+              </section>
+            </div>
+          )}
+
+          {request.status === "APPROVED" &&
+            request.adminNote && (
+              <div className="allocation-status-admin-note">
+                <div>✓</div>
+
+                <section>
+                  <span>Administrator Note</span>
+
+                  <p>{request.adminNote}</p>
+                </section>
+              </div>
+            )}
+
+          {request.status === "PENDING" && (
+            <div className="allocation-status-waiting">
+              <div className="allocation-status-waiting-dot" />
+
+              <div>
+                <strong>
+                  Waiting for administrator approval
+                </strong>
+
+                <p>
+                  This page checks for updates every 10
+                  seconds.
+                </p>
+              </div>
+            </div>
+          )}
+
+          <div className="allocation-status-actions">
+            <div className="allocation-status-update-time">
+              <span
+                className={
+                  refreshing ? "checking" : ""
+                }
+              />
+
+              <p>
+                {refreshing
+                  ? "Checking for updates..."
+                  : `Last checked at ${formatLastUpdated()}`}
+              </p>
+            </div>
+
+            {request.status === "PENDING" ? (
+              <button
+                type="button"
+                className="allocation-status-primary-button"
+                onClick={() =>
+                  refreshRequest(true)
+                }
+                disabled={refreshing}
+              >
+                {refreshing
+                  ? "Refreshing..."
+                  : "Refresh Status"}
+              </button>
+            ) : (
+              <button
+                type="button"
+                className="allocation-status-primary-button"
+                onClick={handleMainAction}
+              >
+                {request.status === "APPROVED"
+                  ? "Go to Dashboard"
+                  : "Request Another Room"}
+              </button>
+            )}
+          </div>
+        </section>
+
+        <div className="allocation-status-help">
+          <div>i</div>
+
+          <p>
+            If the request remains pending for a long
+            time, contact your hostel administrator for
+            assistance.
+          </p>
+        </div>
+      </main>
+    </div>
+  );
 }
 
 export default AllocationStatus;

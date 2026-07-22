@@ -1,6 +1,11 @@
 const API_BASE_URL =
   import.meta.env.VITE_API_BASE_URL || "http://localhost:8080/api";
 
+/*
+ * Gets the JWT token saved after login.
+ * These multiple names are checked so the service works with
+ * different token names used during development.
+ */
 const getAuthToken = () => {
   return (
     localStorage.getItem("staymateToken") ||
@@ -9,10 +14,14 @@ const getAuthToken = () => {
   );
 };
 
-const request = async (endpoint, options = {}) => {
+/*
+ * Common function used for all API requests.
+ */
+const apiRequest = async (endpoint, options = {}) => {
   const token = getAuthToken();
 
   const headers = {
+    Accept: "application/json",
     ...options.headers,
   };
 
@@ -34,18 +43,29 @@ const request = async (endpoint, options = {}) => {
       return null;
     }
 
-    const contentType = response.headers.get("content-type");
+    const responseText = await response.text();
+    let responseData = null;
 
-    const responseData = contentType?.includes("application/json")
-      ? await response.json()
-      : await response.text();
+    if (responseText) {
+      const contentType = response.headers.get("content-type");
+
+      if (contentType?.includes("application/json")) {
+        try {
+          responseData = JSON.parse(responseText);
+        } catch {
+          responseData = responseText;
+        }
+      } else {
+        responseData = responseText;
+      }
+    }
 
     if (!response.ok) {
       const errorMessage =
         responseData?.message ||
         responseData?.error ||
         responseData ||
-        "Something went wrong. Please try again.";
+        `Request failed with status ${response.status}.`;
 
       throw new Error(errorMessage);
     }
@@ -54,7 +74,7 @@ const request = async (endpoint, options = {}) => {
   } catch (error) {
     if (error instanceof TypeError) {
       throw new Error(
-        "Unable to connect to the StayMate server. Please check whether the backend is running."
+        "Unable to connect to the StayMate server. Please check whether the Spring Boot backend is running."
       );
     }
 
@@ -62,148 +82,296 @@ const request = async (endpoint, options = {}) => {
   }
 };
 
+/*
+ * Converts frontend room types into values expected by Spring Boot.
+ */
+const normalizeRoomType = (roomType) => {
+  if (!roomType || roomType === "ALL") {
+    return "";
+  }
+
+  const value = roomType.toUpperCase().replaceAll("-", "_");
+
+  if (value === "NON_AC" || value === "NONAC") {
+    return "NON_AC";
+  }
+
+  if (value === "AC") {
+    return "AC";
+  }
+
+  return value;
+};
+
 const roomAllocationService = {
-  /**
+  /*
+   * Get all rooms that have at least one available bed.
+   *
+   * Example:
+   * getAvailableRooms({
+   *   roomType: "AC",
+   *   capacity: 2
+   * });
+   *
+   * Backend:
+   * GET /api/rooms/available
+   * GET /api/rooms/available?roomType=AC&capacity=2
+   */
+  getAvailableRooms: async (filters = {}) => {
+    const queryParameters = new URLSearchParams();
+
+    const roomType = normalizeRoomType(filters.roomType);
+
+    if (roomType) {
+      queryParameters.append("roomType", roomType);
+    }
+
+    if (
+      filters.capacity &&
+      filters.capacity !== "ALL"
+    ) {
+      queryParameters.append(
+        "capacity",
+        String(filters.capacity)
+      );
+    }
+
+    if (filters.hostelId) {
+      queryParameters.append(
+        "hostelId",
+        String(filters.hostelId)
+      );
+    }
+
+    const queryString = queryParameters.toString();
+
+    const endpoint = queryString
+      ? `/rooms/available?${queryString}`
+      : "/rooms/available";
+
+    return apiRequest(endpoint);
+  },
+
+  /*
+   * Get complete information about one selected room.
+   *
+   * Backend:
+   * GET /api/rooms/{roomId}
+   */
+  getRoomById: async (roomId) => {
+    if (!roomId) {
+      throw new Error("Room ID is required.");
+    }
+
+    return apiRequest(
+      `/rooms/${encodeURIComponent(roomId)}`
+    );
+  },
+
+  /*
    * Resident submits a room-allocation request.
    *
    * Example requestData:
    * {
-   *   hostelCode: "STAY001",
-   *   preferredRoomType: "DOUBLE",
-   *   preferredFloor: "2",
-   *   note: "Prefer a room near the study hall"
+   *   roomId: 12
    * }
    *
-   * Backend endpoint: POST /api/room-allocation-requests
+   * The backend should identify the resident using the JWT token.
+   *
+   * Backend:
+   * POST /api/room-allocation-requests
    */
-  createRequest: (requestData) => {
-    return request("/room-allocation-requests", {
+  createRequest: async (requestData) => {
+    if (!requestData?.roomId) {
+      throw new Error(
+        "Please select a room before making a request."
+      );
+    }
+
+    return apiRequest("/room-allocation-requests", {
       method: "POST",
-      body: JSON.stringify(requestData),
+      body: JSON.stringify({
+        roomId: requestData.roomId,
+        note: requestData.note?.trim() || "",
+      }),
     });
   },
 
-  /**
-   * Get the latest room-allocation request of the logged-in resident.
-   * Backend endpoint: GET /api/room-allocation-requests/me/latest
+  /*
+   * Get the latest allocation request of the logged-in resident.
+   *
+   * Backend:
+   * GET /api/room-allocation-requests/me/latest
    */
-  getLatestRequest: () => {
-    return request("/room-allocation-requests/me/latest");
-  },
-
-  /**
-   * Get all room-allocation requests made by the logged-in resident.
-   * Backend endpoint: GET /api/room-allocation-requests/me
-   */
-  getMyRequests: () => {
-    return request("/room-allocation-requests/me");
-  },
-
-  /**
-   * Get a particular allocation request.
-   * Backend endpoint: GET /api/room-allocation-requests/{requestId}
-   */
-  getRequestById: (requestId) => {
-    if (!requestId) {
-      throw new Error("Room-allocation request ID is required.");
-    }
-
-    return request(
-      `/room-allocation-requests/${encodeURIComponent(requestId)}`
+  getLatestRequest: async () => {
+    return apiRequest(
+      "/room-allocation-requests/me/latest"
     );
   },
 
-  /**
-   * Resident cancels a pending room-allocation request.
-   * Backend endpoint:
+  /*
+   * Alias for getLatestRequest().
+   * Either method name can be used in AllocationStatus.jsx.
+   */
+  getMyLatestRequest: async () => {
+    return apiRequest(
+      "/room-allocation-requests/me/latest"
+    );
+  },
+
+  /*
+   * Get all allocation requests submitted by the logged-in resident.
+   *
+   * Backend:
+   * GET /api/room-allocation-requests/me
+   */
+  getMyRequests: async () => {
+    return apiRequest("/room-allocation-requests/me");
+  },
+
+  /*
+   * Get one room-allocation request by its ID.
+   *
+   * Backend:
+   * GET /api/room-allocation-requests/{requestId}
+   */
+  getRequestById: async (requestId) => {
+    if (!requestId) {
+      throw new Error(
+        "Room-allocation request ID is required."
+      );
+    }
+
+    return apiRequest(
+      `/room-allocation-requests/${encodeURIComponent(
+        requestId
+      )}`
+    );
+  },
+
+  /*
+   * Cancel a pending request.
+   *
+   * Backend:
    * PATCH /api/room-allocation-requests/{requestId}/cancel
    */
-  cancelRequest: (requestId) => {
+  cancelRequest: async (requestId) => {
     if (!requestId) {
-      throw new Error("Room-allocation request ID is required.");
+      throw new Error(
+        "Room-allocation request ID is required."
+      );
     }
 
-    return request(
-      `/room-allocation-requests/${encodeURIComponent(requestId)}/cancel`,
+    return apiRequest(
+      `/room-allocation-requests/${encodeURIComponent(
+        requestId
+      )}/cancel`,
       {
         method: "PATCH",
       }
     );
   },
 
-  /**
-   * Admin gets all room-allocation requests belonging to their hostel.
+  /*
+   * Admin gets room requests for their hostel.
    *
-   * Optional status examples:
-   * PENDING, APPROVED, REJECTED, CANCELLED
+   * Example:
+   * getAdminRequests("PENDING")
    *
-   * Backend endpoint:
+   * Backend:
+   * GET /api/room-allocation-requests/admin
    * GET /api/room-allocation-requests/admin?status=PENDING
    */
-  getAdminRequests: (status = "") => {
-    const query = status
-      ? `?status=${encodeURIComponent(status)}`
-      : "";
+  getAdminRequests: async (status = "") => {
+    const queryParameters = new URLSearchParams();
 
-    return request(`/room-allocation-requests/admin${query}`);
+    if (status && status !== "ALL") {
+      queryParameters.append(
+        "status",
+        status.toUpperCase()
+      );
+    }
+
+    const queryString = queryParameters.toString();
+
+    const endpoint = queryString
+      ? `/room-allocation-requests/admin?${queryString}`
+      : "/room-allocation-requests/admin";
+
+    return apiRequest(endpoint);
   },
 
-  /**
-   * Admin approves a room-allocation request.
+  /*
+   * Admin approves the resident's selected room.
    *
-   * Example allocationData:
-   * {
-   *   roomId: 12,
-   *   bedNumber: 2,
+   * Example:
+   * approveRequest(15, {
    *   adminNote: "Room allocation approved"
-   * }
+   * });
    *
-   * Backend endpoint:
+   * Backend:
    * PATCH /api/room-allocation-requests/{requestId}/approve
    */
-  approveRequest: (requestId, allocationData) => {
+  approveRequest: async (
+    requestId,
+    approvalData = {}
+  ) => {
     if (!requestId) {
-      throw new Error("Room-allocation request ID is required.");
+      throw new Error(
+        "Room-allocation request ID is required."
+      );
     }
 
-    if (!allocationData?.roomId) {
-      throw new Error("Please select a room before approving the request.");
-    }
-
-    return request(
-      `/room-allocation-requests/${encodeURIComponent(requestId)}/approve`,
+    return apiRequest(
+      `/room-allocation-requests/${encodeURIComponent(
+        requestId
+      )}/approve`,
       {
         method: "PATCH",
-        body: JSON.stringify(allocationData),
+        body: JSON.stringify({
+          adminNote:
+            approvalData.adminNote?.trim() || "",
+        }),
       }
     );
   },
 
-  /**
+  /*
    * Admin rejects a room-allocation request.
    *
-   * Example rejectionData:
-   * {
-   *   reason: "No rooms are currently available"
-   * }
+   * Example:
+   * rejectRequest(15, {
+   *   reason: "The selected room is no longer available"
+   * });
    *
-   * Backend endpoint:
+   * Backend:
    * PATCH /api/room-allocation-requests/{requestId}/reject
    */
-  rejectRequest: (requestId, rejectionData) => {
+  rejectRequest: async (
+    requestId,
+    rejectionData
+  ) => {
     if (!requestId) {
-      throw new Error("Room-allocation request ID is required.");
+      throw new Error(
+        "Room-allocation request ID is required."
+      );
     }
 
     if (!rejectionData?.reason?.trim()) {
-      throw new Error("A rejection reason is required.");
+      throw new Error(
+        "Please enter a reason for rejecting the request."
+      );
     }
 
-    return request(
-      `/room-allocation-requests/${encodeURIComponent(requestId)}/reject`,
+    return apiRequest(
+      `/room-allocation-requests/${encodeURIComponent(
+        requestId
+      )}/reject`,
       {
         method: "PATCH",
-        body: JSON.stringify(rejectionData),
+        body: JSON.stringify({
+          reason: rejectionData.reason.trim(),
+        }),
       }
     );
   },
