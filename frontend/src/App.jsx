@@ -160,6 +160,14 @@ function App() {
           </ProtectedRoute>
         }
       />
+      <Route
+        path="/admin/residents"
+        element={
+          <ProtectedRoute allowedRoles={["ADMIN"]}>
+            <ResidentManagement />
+          </ProtectedRoute>
+        }
+      />
       <Route path="*" element={<Navigate to="/" />} />
     </Routes>
   );

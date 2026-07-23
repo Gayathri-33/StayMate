@@ -289,4 +289,20 @@ public class AdminService {
     public void deleteMessItem(Long id) {
         messMenuRepository.deleteById(id);
     }
+ // ---------- NOTIFICATIONS ----------
+
+    public List<NotificationDTO> getNotifications(Long adminUserId) {
+        return notificationRepository
+                .findByRecipientRoleAndRecipientIdOrderByCreatedAtDesc(Role.ADMIN, adminUserId)
+                .stream()
+                .map(n -> new NotificationDTO(n.getId(), n.getMessage(), n.getIsRead(), n.getCreatedAt()))
+                .toList();
+    }
+
+    public void markNotificationRead(Long id) {
+        Notification n = notificationRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Notification not found"));
+        n.setIsRead(true);
+        notificationRepository.save(n);
+    }
 }

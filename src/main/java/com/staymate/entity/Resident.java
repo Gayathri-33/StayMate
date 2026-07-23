@@ -34,6 +34,10 @@ public class Resident {
     @ManyToOne
     @JoinColumn(name="bed_id")
     private Bed bed;
+ // add to Resident.java
+    private String address;
+    public String getAddress() { return address; }
+    public void setAddress(String address) { this.address = address; }
     // getters/setters
     public Long getResidentId() { return residentId; }
     public void setResidentId(Long residentId) { this.residentId = residentId; }
