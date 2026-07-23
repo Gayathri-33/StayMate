@@ -37,35 +37,38 @@ function ResidentManagement() {
 
   return (
     <Layout title="Resident Management" menuItems={menu}>
-      <div style={{ marginBottom: "20px", display: "flex", alignItems: "center", gap: "15px" }}>
-        <label style={{ fontWeight: "bold" }}>Select Hostel:</label>
-        <select value={selectedHostel?.hostelId || ""} onChange={e => setSelectedHostel(hostels.find(h => h.hostelId == e.target.value))} style={inputStyle}>
-          {hostels.map(h => <option key={h.hostelId} value={h.hostelId}>{h.hostelName} ({h.hostelCode})</option>)}
-        </select>
+      <style>{residentMgmtStyles}</style>
+      <div className="controls-bar">
+        <div className="control-group">
+          <label>Select Hostel:</label>
+          <select value={selectedHostel?.hostelId || ""} onChange={e => setSelectedHostel(hostels.find(h => h.hostelId == e.target.value))} className="staymate-input">
+            {hostels.map(h => <option key={h.hostelId} value={h.hostelId}>{h.hostelName} ({h.hostelCode})</option>)}
+          </select>
+        </div>
       </div>
 
-      <table style={tableStyle}>
+      <table className="staymate-table">
         <thead>
-          <tr style={thStyle}>
-            <th style={th}>Code</th><th style={th}>Name</th><th style={th}>Email</th><th style={th}>Room / Bed</th>
-            <th style={th}>Status</th><th style={th}>Payment</th><th style={th}>Actions</th>
+          <tr>
+            <th>Code</th><th>Name</th><th>Email</th><th>Room / Bed</th>
+            <th>Status</th><th>Payment</th><th>Actions</th>
           </tr>
         </thead>
         <tbody>
-          {residents.length === 0 ? <tr><td colSpan="7" style={{...td, textAlign:"center"}}>No residents registered yet.</td></tr> : 
+          {residents.length === 0 ? <tr><td colSpan="7" className="empty-row">No residents registered yet.</td></tr> : 
           residents.map(r => (
-            <tr key={r.residentId} style={trStyle}>
-              <td style={td}><b>{r.residentCode}</b></td>
-              <td style={td}>{r.fullName}</td>
-              <td style={td}>{r.email}</td>
-              <td style={td}>{r.roomNumber} / {r.bedNumber}</td>
-              <td style={td}><span style={statusBadge(r.status)}>{r.status}</span></td>
-              <td style={td}><span style={statusBadge(r.paymentStatus)}>{r.paymentStatus}</span></td>
-              <td style={td}>
+            <tr key={r.residentId}>
+              <td><b>{r.residentCode}</b></td>
+              <td>{r.fullName}</td>
+              <td>{r.email}</td>
+              <td>{r.roomNumber} / {r.bedNumber}</td>
+              <td><span className={`badge-${r.status.toLowerCase()}`}>{r.status}</span></td>
+              <td><span className={`badge-${r.paymentStatus.toLowerCase()}`}>{r.paymentStatus}</span></td>
+              <td>
                 {r.status === "BLOCKED" ? (
-                  <button onClick={() => handleToggleBlock(r.residentId, true)} style={successBtn}>Unblock</button>
+                  <button onClick={() => handleToggleBlock(r.residentId, true)} className="staymate-btn-sm success">Unblock</button>
                 ) : (
-                  <button onClick={() => handleToggleBlock(r.residentId, false)} style={dangerBtn}>Block</button>
+                  <button onClick={() => handleToggleBlock(r.residentId, false)} className="staymate-btn-sm danger">Block</button>
                 )}
               </td>
             </tr>
@@ -76,23 +79,29 @@ function ResidentManagement() {
   );
 }
 
-// --- Shared Styles ---
-const inputStyle = { padding: "10px", borderRadius: "6px", border: "1px solid #CBD5E1", fontSize: "14px" };
-const tableStyle = { width: "100%", borderCollapse: "collapse", marginTop: "10px" };
-const thStyle = { background: "#F1F5F9" };
-const th = { padding: "12px", textAlign: "left", fontSize: "14px", color: "#475569" };
-const td = { padding: "12px", fontSize: "14px", borderBottom: "1px solid #E2E8F0" };
-const trStyle = {};
-const successBtn = { padding: "6px 12px", background: "#10B981", color: "#fff", border: "none", borderRadius: "4px", cursor: "pointer", fontSize: "13px" };
-const dangerBtn = { padding: "6px 12px", background: "#EF4444", color: "#fff", border: "none", borderRadius: "4px", cursor: "pointer", fontSize: "13px" };
-const statusBadge = (status) => ({
-  padding: "4px 8px", borderRadius: "12px", fontSize: "12px", fontWeight: "bold",
-  background: status === "ACTIVE" || status === "PAID" ? "#D1FAE5" : 
-              status === "PENDING" || status === "PENDING_PAYMENT" ? "#FEF3C7" : 
-              status === "BLOCKED" || status === "OVERDUE" ? "#FEE2E2" : "#E2E8F0",
-  color: status === "ACTIVE" || status === "PAID" ? "#065F46" : 
-         status === "PENDING" || status === "PENDING_PAYMENT" ? "#92400E" : 
-         status === "BLOCKED" || status === "OVERDUE" ? "#991B1B" : "#475569"
-});
+const residentMgmtStyles = `
+  .controls-bar { display: flex; gap: 20px; align-items: center; flex-wrap: wrap; margin-bottom: 25px; background: #FFFFFF; padding: 20px; border-radius: 12px; border: 1px solid #A3B18A; }
+  .control-group { display: flex; align-items: center; gap: 10px; }
+  .control-group label { font-weight: 600; color: #344E41; }
+  .staymate-input { padding: 8px 12px; border: 1px solid #A3B18A; border-radius: 8px; background-color: #FAFAFA; color: #344E41; outline: none; transition: all 0.2s; font-size: 14px; min-width: 250px; }
+  .staymate-input:focus { border-color: #3A5A40; background-color: #FFFFFF; }
+  .staymate-table { width: 100%; border-collapse: collapse; background: #FFFFFF; border-radius: 12px; overflow: hidden; border: 1px solid #A3B18A; }
+  .staymate-table th { background-color: #A3B18A; color: #344E41; padding: 14px; text-align: left; font-weight: 600; font-size: 14px; }
+  .staymate-table td { padding: 14px; border-bottom: 1px solid #DAD7CD; color: #344E41; font-size: 14px; }
+  .staymate-table tr:hover { background-color: #F4F7F4; }
+  .staymate-table tr:last-child td { border-bottom: none; }
+  .empty-row { text-align: center; color: #588157; padding: 30px !important; }
+  .staymate-btn-sm { padding: 6px 12px; border: none; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: 600; transition: all 0.2s; }
+  .staymate-btn-sm.success { background: #3A5A40; color: #FFFFFF; }
+  .staymate-btn-sm.success:hover { background: #344E41; }
+  .staymate-btn-sm.danger { background: #8B2E2E; color: #FFFFFF; }
+  .staymate-btn-sm.danger:hover { background: #6B2222; }
+  .badge-active, .badge-paid { background: #3A5A40; color: #FFFFFF; padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: 600; }
+  .badge-pending, .badge-pending_payment { background: #A3B18A; color: #344E41; padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: 600; }
+  .badge-blocked, .badge-overdue { background: #8B2E2E; color: #FFFFFF; padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: 600; }
+  @media (max-width: 768px) {
+    .staymate-table { display: block; overflow-x: auto; }
+  }
+`;
 
 export default ResidentManagement;

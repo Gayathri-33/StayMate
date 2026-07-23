@@ -18,76 +18,53 @@ function HostelManagement() {
     fetchFn().then(res => setHostels(res.data));
   };
 
-  useEffect(() => {
-    fetchHostels();
-  }, [tab]);
+  useEffect(() => { fetchHostels(); }, [tab]);
 
   const handleAction = async (id, action) => {
     if (action === "approve") await superadminService.approveHostel(id);
     else await superadminService.rejectHostel(id);
-    
-    // Refresh the list after action
     fetchHostels();
   };
 
   return (
     <Layout title="Hostel Management" menuItems={menu}>
-      <div style={{ marginBottom: "20px", display: "flex", gap: "10px" }}>
+      <style>{hostelStyles}</style>
+      <div className="controls-bar">
         {["pending", "approved"].map(t => (
-          <button 
-            key={t} 
-            onClick={() => setTab(t)} 
-            style={{ 
-              padding: "8px 16px", 
-              background: tab === t ? "#2563EB" : "#E2E8F0", 
-              color: tab === t ? "#fff" : "#000", 
-              border: "none", 
-              borderRadius: "6px", 
-              cursor: "pointer", 
-              textTransform: "uppercase",
-              fontWeight: tab === t ? "bold" : "normal"
-            }}
-          >
+          <button key={t} onClick={() => setTab(t)} className={tab === t ? "tab-btn active" : "tab-btn"}>
             {t}
           </button>
         ))}
       </div>
 
-      <div style={{ overflowX: "auto" }}>
-        <table style={{ width: "100%", borderCollapse: "collapse", minWidth: "800px" }}>
+      <div className="table-wrapper">
+        <table className="staymate-table">
           <thead>
-            <tr style={{ background: "#F1F5F9" }}>
-              <th style={th}>Hostel Name</th>
-              <th style={th}>Code</th>
-              <th style={th}>Place</th>
-              <th style={th}>Type</th>
-              <th style={th}>Rooms</th>
-              <th style={th}>Fee</th>
-              <th style={th}>Admin</th>
-              <th style={th}>Actions</th>
+            <tr>
+              <th>Hostel Name</th><th>Code</th><th>Place</th><th>Type</th><th>Rooms</th><th>Fee</th><th>Admin</th><th>Actions</th>
             </tr>
           </thead>
           <tbody>
             {hostels.length === 0 ? (
-              <tr><td colSpan="8" style={{ ...td, textAlign: "center", color: "#64748B" }}>No hostels found in this category.</td></tr>
+              <tr><td colSpan="8" className="empty-row">No hostels found in this category.</td></tr>
             ) : (
               hostels.map(h => (
-                <tr key={h.hostelId} style={{ borderBottom: "1px solid #E2E8F0" }}>
-                  <td style={td}><b>{h.hostelName}</b></td>
-                  <td style={td}>{h.hostelCode || <span style={{color: "#94A3B8"}}>Pending</span>}</td>
-                  <td style={td}>{h.place}</td>
-                  <td style={td}>{h.hostelType}</td>
-                  <td style={td}>{h.totalRooms}</td>
-                  <td style={td}>₹{h.feeAmount} / {h.feeCycle}</td>
-                  <td style={td}>
+                <tr key={h.hostelId}>
+                  <td><b>{h.hostelName}</b></td>
+                  <td>{h.hostelCode || <span className="text-muted">Pending</span>}</td>
+                  <td>{h.place}</td>
+                  <td>{h.hostelType}</td>
+                  <td>{h.totalRooms}</td>
+                  <td>₹{h.feeAmount} / {h.feeCycle}</td>
+                  <td>
                     {h.adminName} <br/>
-                    <small style={{ color: "#64748B" }}>{h.adminEmail}</small>
+                    <small className="text-muted">{h.adminEmail}</small>
                   </td>
-                  <td style={td}>
+                  <td>
                     {tab === "pending" && (
                       <>
-                        <button onClick={() => handleAction(h.hostelId, "approve")} style={{ background: "#10B981", color: "#fff", border: "none", padding: "6px 12px", borderRadius: "4px", marginRight: "5px", cursor: "pointer" }}>Approve</button>
-                        <button onClick={() => handleAction(h.hostelId, "reject")} style={{ background: "#EF4444", color: "#fff", border: "none", padding: "6px 12px", borderRadius: "4px", cursor: "pointer" }}>Reject</button>
+                        <button onClick={() => handleAction(h.hostelId, "approve")} className="staymate-btn-sm success">Approve</button>
+                        <button onClick={() => handleAction(h.hostelId, "reject")} className="staymate-btn-sm danger">Reject</button>
                       </>
                     )}
                   </td>
@@ -101,7 +78,24 @@ function HostelManagement() {
   );
 }
 
-const th = { padding: "12px", textAlign: "left", fontSize: "14px", color: "#475569" };
-const td = { padding: "12px", fontSize: "14px" };
+const hostelStyles = `
+  .controls-bar { display: flex; gap: 10px; margin-bottom: 20px; }
+  .tab-btn { padding: 8px 16px; background: #A3B18A; color: #344E41; border: none; border-radius: 6px; cursor: pointer; text-transform: uppercase; font-weight: normal; transition: all 0.2s; }
+  .tab-btn.active { background: #3A5A40; color: #FFFFFF; font-weight: bold; }
+  .tab-btn:hover:not(.active) { background: #588157; color: #FFFFFF; }
+  .table-wrapper { overflow-x: auto; }
+  .staymate-table { width: 100%; min-width: 800px; border-collapse: collapse; background: #FFFFFF; border-radius: 12px; overflow: hidden; border: 1px solid #A3B18A; }
+  .staymate-table th { background-color: #A3B18A; color: #344E41; padding: 14px; text-align: left; font-weight: 600; font-size: 14px; }
+  .staymate-table td { padding: 14px; border-bottom: 1px solid #DAD7CD; color: #344E41; font-size: 14px; }
+  .staymate-table tr:hover { background-color: #F4F7F4; }
+  .staymate-table tr:last-child td { border-bottom: none; }
+  .empty-row { text-align: center; color: #588157; padding: 30px !important; }
+  .text-muted { color: #588157; font-size: 12px; }
+  .staymate-btn-sm { padding: 6px 12px; border: none; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: 600; transition: all 0.2s; margin-right: 5px; }
+  .staymate-btn-sm.success { background: #3A5A40; color: #FFFFFF; }
+  .staymate-btn-sm.success:hover { background: #344E41; }
+  .staymate-btn-sm.danger { background: #8B2E2E; color: #FFFFFF; }
+  .staymate-btn-sm.danger:hover { background: #6B2222; }
+`;
 
 export default HostelManagement;

@@ -15,26 +15,36 @@ function SuperAdminDashboard() {
 
   return (
     <Layout title="Super Admin Dashboard" menuItems={menu}>
+      <style>{dashboardStyles}</style>
       {stats ? (
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: "20px" }}>
-          <StatCard title="Total Admins" value={stats.totalAdmins} color="#2563EB" />
-          <StatCard title="Pending Admins" value={stats.pendingAdmins} color="#F59E0B" />
-          <StatCard title="Total Hostels" value={stats.totalHostels} color="#10B981" />
-          <StatCard title="Pending Hostels" value={stats.pendingHostels} color="#F59E0B" />
-          <StatCard title="Total Residents" value={stats.totalResidents} color="#8B5CF6" />
-          <StatCard title="Unread Alerts" value={stats.unreadNotifications} color="#EF4444" />
+        <div className="stats-grid">
+          <StatCard title="Total Admins" value={stats.totalAdmins} color="#3A5A40" />
+          <StatCard title="Pending Admins" value={stats.pendingAdmins} color="#588157" />
+          <StatCard title="Total Hostels" value={stats.totalHostels} color="#3A5A40" />
+          <StatCard title="Pending Hostels" value={stats.pendingHostels} color="#588157" />
+          <StatCard title="Total Residents" value={stats.totalResidents} color="#344E41" />
+          <StatCard title="Unread Alerts" value={stats.unreadNotifications} color="#8B2E2E" />
         </div>
-      ) : <p>Loading...</p>}
+      ) : <p className="loading-text">Loading...</p>}
     </Layout>
   );
 }
 
 function StatCard({ title, value, color }) {
   return (
-    <div style={{ background: "#fff", padding: "20px", borderRadius: "8px", boxShadow: "0 1px 3px rgba(0,0,0,0.1)", borderLeft: `5px solid ${color}` }}>
-      <h3 style={{ color: "#64748B", fontSize: "14px", margin: 0 }}>{title}</h3>
-      <p style={{ fontSize: "28px", fontWeight: "bold", margin: "10px 0 0", color: "#0F172A" }}>{value}</p>
+    <div className="stat-card" style={{ borderLeft: `5px solid ${color}` }}>
+      <h3>{title}</h3>
+      <p>{value}</p>
     </div>
   );
 }
+
+const dashboardStyles = `
+  .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; }
+  .stat-card { background: #FFFFFF; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(52, 78, 65, 0.1); border: 1px solid #A3B18A; }
+  .stat-card h3 { color: #588157; font-size: 14px; margin: 0; text-transform: uppercase; letter-spacing: 0.5px; }
+  .stat-card p { font-size: 28px; font-weight: bold; margin: 10px 0 0; color: #344E41; }
+  .loading-text { color: #588157; font-size: 16px; text-align: center; padding: 40px; background: #FFFFFF; border-radius: 12px; border: 1px dashed #A3B18A; }
+`;
+
 export default SuperAdminDashboard;

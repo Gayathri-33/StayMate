@@ -7,7 +7,8 @@ const superadminService = {
   getRejectedAdmins: () => api.get("/superadmin/admins/rejected"),
   approveAdmin: (id) => api.put(`/superadmin/admins/approve/${id}`),
   rejectAdmin: (id) => api.put(`/superadmin/admins/reject/${id}`),
-  
+  // Add this line inside the superadminService object:
+updateAdminStatus: (id, status) => api.put(`/superadmin/admins/status/${id}/${status}`),
   getPendingHostels: () => api.get("/superadmin/hostels/pending"),
   getApprovedHostels: () => api.get("/superadmin/hostels/approved"),
   approveHostel: (id) => api.put(`/superadmin/hostels/approve/${id}`),

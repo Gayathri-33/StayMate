@@ -18,55 +18,34 @@ function Notifications() {
 
   const handleMarkRead = async (id) => {
     await superadminService.markNotificationRead(id);
-    // Update UI instantly without refetching
     setNotifications(notifications.map(n => n.id === id ? { ...n, isRead: true } : n));
   };
 
   return (
     <Layout title="Notifications" menuItems={menu}>
-      <table style={{ width: "100%", borderCollapse: "collapse" }}>
+      <style>{notifStyles}</style>
+      <table className="staymate-table">
         <thead>
-          <tr style={{ background: "#F1F5F9" }}>
-            <th style={th}>Message</th>
-            <th style={th}>Date & Time</th>
-            <th style={th}>Status</th>
-            <th style={th}>Action</th>
+          <tr>
+            <th>Message</th><th>Date & Time</th><th>Status</th><th>Action</th>
           </tr>
         </thead>
         <tbody>
           {notifications.length === 0 ? (
-            <tr><td colSpan="4" style={{ ...td, textAlign: "center", color: "#64748B" }}>No notifications yet.</td></tr>
+            <tr><td colSpan="4" className="empty-row">No notifications yet.</td></tr>
           ) : (
             notifications.map(n => (
-              <tr key={n.id} style={{ borderBottom: "1px solid #E2E8F0", background: n.isRead ? "#fff" : "#F8FAFC" }}>
-                <td style={td}>{n.message}</td>
-                <td style={td}>{new Date(n.createdAt).toLocaleString()}</td>
-                <td style={td}>
-                  <span style={{ 
-                    padding: "4px 8px", 
-                    borderRadius: "12px", 
-                    fontSize: "12px", 
-                    fontWeight: "bold",
-                    background: n.isRead ? "#E2E8F0" : "#FEF3C7", 
-                    color: n.isRead ? "#475569" : "#92400E" 
-                  }}>
+              <tr key={n.id} className={n.isRead ? "" : "unread-row"}>
+                <td>{n.message}</td>
+                <td>{new Date(n.createdAt).toLocaleString()}</td>
+                <td>
+                  <span className={`badge-${n.isRead ? "read" : "unread"}`}>
                     {n.isRead ? "Read" : "Unread"}
                   </span>
                 </td>
-                <td style={td}>
+                <td>
                   {!n.isRead && (
-                    <button 
-                      onClick={() => handleMarkRead(n.id)} 
-                      style={{ 
-                        background: "#2563EB", 
-                        color: "#fff", 
-                        border: "none", 
-                        padding: "6px 12px", 
-                        borderRadius: "4px", 
-                        cursor: "pointer",
-                        fontSize: "13px"
-                      }}
-                    >
+                    <button onClick={() => handleMarkRead(n.id)} className="staymate-btn-sm primary">
                       Mark as Read
                     </button>
                   )}
@@ -80,7 +59,19 @@ function Notifications() {
   );
 }
 
-const th = { padding: "12px", textAlign: "left", fontSize: "14px", color: "#475569" };
-const td = { padding: "12px", fontSize: "14px" };
+const notifStyles = `
+  .staymate-table { width: 100%; border-collapse: collapse; background: #FFFFFF; border-radius: 12px; overflow: hidden; border: 1px solid #A3B18A; }
+  .staymate-table th { background-color: #A3B18A; color: #344E41; padding: 14px; text-align: left; font-weight: 600; font-size: 14px; }
+  .staymate-table td { padding: 14px; border-bottom: 1px solid #DAD7CD; color: #344E41; font-size: 14px; }
+  .staymate-table tr:hover { background-color: #F4F7F4; }
+  .staymate-table tr:last-child td { border-bottom: none; }
+  .unread-row { background-color: #F8FAFC; }
+  .empty-row { text-align: center; color: #588157; padding: 30px !important; }
+  .badge-read { background: #A3B18A; color: #344E41; padding: 4px 8px; border-radius: 12px; font-size: 12px; font-weight: bold; }
+  .badge-unread { background: #FEF3C7; color: #92400E; padding: 4px 8px; border-radius: 12px; font-size: 12px; font-weight: bold; }
+  .staymate-btn-sm { padding: 6px 12px; border: none; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: 600; transition: all 0.2s; }
+  .staymate-btn-sm.primary { background: #3A5A40; color: #FFFFFF; }
+  .staymate-btn-sm.primary:hover { background: #344E41; }
+`;
 
 export default Notifications;

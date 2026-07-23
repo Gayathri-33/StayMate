@@ -5,22 +5,21 @@ function Home() {
   const navigate = useNavigate();
 
   return (
-    <div style={page}>
-      <div style={card}>
-        <FaUserShield size={60} color="#2563EB" />
-        <h1 style={{ margin: "15px 0 5px" }}>StayMate</h1>
-        <p style={{ color: "#666", marginBottom: "35px" }}>Hostel Management System</p>
+    <div className="staymate-page">
+      <style>{homeStyles}</style>
+      <div className="staymate-card home-card">
+        <FaUserShield size={60} color="#3A5A40" />
+        <h1 className="staymate-title">StayMate</h1>
+        <p className="staymate-subtitle">Hostel Management System</p>
 
-        <div style={{ display: "flex", flexDirection: "column", gap: "15px" }}>
-          <button style={primaryBtn} onClick={() => navigate("/login")}>
+        <div className="home-buttons">
+          <button className="staymate-btn-primary" onClick={() => navigate("/login")}>
             Login
           </button>
-
-          <button style={secondaryBtn} onClick={() => navigate("/register/admin")}>
+          <button className="staymate-btn-secondary" onClick={() => navigate("/register/admin")}>
             <FaUserTie style={{ marginRight: "8px" }} /> Register as Admin
           </button>
-
-          <button style={secondaryBtn} onClick={() => navigate("/register/resident")}>
+          <button className="staymate-btn-secondary" onClick={() => navigate("/register/resident")}>
             <FaUserGraduate style={{ marginRight: "8px" }} /> Register as Resident
           </button>
         </div>
@@ -29,46 +28,16 @@ function Home() {
   );
 }
 
-// --- Inline Styles ---
-const page = {
-  height: "100vh",
-  display: "flex",
-  justifyContent: "center",
-  alignItems: "center",
-  background: "#EEF2FF",
-};
-
-const card = {
-  width: "420px",
-  background: "#fff",
-  padding: "45px",
-  borderRadius: "15px",
-  boxShadow: "0 8px 20px rgba(0,0,0,0.15)",
-  textAlign: "center",
-};
-
-const primaryBtn = {
-  padding: "13px",
-  background: "#2563EB",
-  color: "#fff",
-  border: "none",
-  borderRadius: "8px",
-  fontSize: "16px",
-  fontWeight: "bold",
-  cursor: "pointer",
-};
-
-const secondaryBtn = {
-  padding: "13px",
-  background: "#F1F5F9",
-  color: "#0F172A",
-  border: "1px solid #CBD5E1",
-  borderRadius: "8px",
-  fontSize: "15px",
-  cursor: "pointer",
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-};
+const homeStyles = `
+  .staymate-page { min-height: 100vh; display: flex; justify-content: center; align-items: center; background: #DAD7CD; padding: 20px; }
+  .staymate-card { width: 100%; max-width: 450px; background: #FFFFFF; padding: 45px; border-radius: 12px; border: 1px solid #A3B18A; box-shadow: 0 8px 20px rgba(52, 78, 65, 0.1); text-align: center; }
+  .staymate-title { color: #344E41; margin: 15px 0 5px; font-size: 28px; }
+  .staymate-subtitle { color: #588157; margin-bottom: 35px; font-size: 16px; }
+  .home-buttons { display: flex; flex-direction: column; gap: 15px; }
+  .staymate-btn-primary { padding: 14px; background: #3A5A40; color: #FFFFFF; border: none; border-radius: 8px; font-size: 16px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+  .staymate-btn-primary:hover { background: #344E41; }
+  .staymate-btn-secondary { padding: 14px; background: #A3B18A; color: #344E41; border: 1px solid #A3B18A; border-radius: 8px; font-size: 15px; font-weight: 600; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; }
+  .staymate-btn-secondary:hover { background: #588157; color: #FFFFFF; border-color: #588157; }
+`;
 
 export default Home;

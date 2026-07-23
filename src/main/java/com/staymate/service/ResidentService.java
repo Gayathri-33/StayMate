@@ -86,10 +86,10 @@ public class ResidentService {
         }
 
         Hostel hostel = hostelRepository.findByHostelCode(req.getHostelCode())
-                .orElseThrow(() -> new RuntimeException("Invalid hostel code"));
+            .orElseThrow(() -> new RuntimeException("Invalid hostel code"));
 
         Bed bed = bedRepository.findById(req.getBedId())
-                .orElseThrow(() -> new RuntimeException("Selected bed not found"));
+            .orElseThrow(() -> new RuntimeException("Selected bed not found"));
 
         if (bed.getStatus() == BedStatus.OCCUPIED) {
             throw new RuntimeException("Selected bed is already occupied. Please choose another.");
@@ -108,33 +108,26 @@ public class ResidentService {
         resident.setHostel(hostel);
         resident.setResidentCode(generateUniqueResidentCode());
         resident.setRegistrationDate(LocalDate.now());
-
+        
+        // Store selected bed info but DON'T occupy it yet
+        resident.setBed(bed);  // Add bed field to Resident entity if not exists
+        
         int bufferDays = hostel.getPaymentBufferDays() != null ? hostel.getPaymentBufferDays() : 3;
         resident.setPaymentDueDate(LocalDate.now().plusDays(bufferDays));
-
-        resident.setStatus(ResidentStatus.PENDING_PAYMENT);
+        
+        // NEW: Status is PENDING until admin approves
+        resident.setStatus(ResidentStatus.PENDING);
         resident.setPaymentStatus(PaymentStatus.PENDING);
         resident = residentRepository.save(resident);
 
-        // occupy the bed
-        bed.setStatus(BedStatus.OCCUPIED);
-        bed.setResident(resident);
-        bedRepository.save(bed);
-
-        // update room counts
-        Room room = bed.getRoom();
-        room.setOccupiedBeds(room.getOccupiedBeds() + 1);
-        room.setAvailableBeds(room.getAvailableBeds() - 1);
-        roomRepository.save(room);
-
-        // notify admin
+        // Notify admin about new resident request
         if (hostel.getAdmin() != null) {
             Notification notif = new Notification();
             notif.setRecipientRole(Role.ADMIN);
             notif.setRecipientId(hostel.getAdmin().getUserId());
-            notif.setMessage("New resident " + user.getFullName() + " registered in Room " +
-                    room.getRoomNumber() + ", Bed " + bed.getBedNumber() +
-                    ". Payment due by " + resident.getPaymentDueDate());
+            notif.setMessage("New resident request from " + user.getFullName() + 
+                " for Room " + bed.getRoom().getRoomNumber() + 
+                ", Bed " + bed.getBedNumber() + ". Awaiting your approval.");
             notificationRepository.save(notif);
         }
 

@@ -115,4 +115,13 @@ public class SuperAdminController {
             return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
         }
     }
+    @PutMapping("/admins/status/{userId}/{status}")
+    public ResponseEntity<?> updateAdminStatus(@PathVariable Long userId, @PathVariable String status) {
+        try {
+            superAdminService.updateAdminStatus(userId, AdminStatus.valueOf(status));
+            return ResponseEntity.ok(Map.of("message", "Status updated to " + status));
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+        }
+    }
 }

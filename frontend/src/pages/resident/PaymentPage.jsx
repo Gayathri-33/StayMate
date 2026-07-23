@@ -49,14 +49,25 @@ function PaymentPage() {
 
   return (
     <Layout title="Make Payment" menuItems={menu}>
-      <div style={{ textAlign: "center", padding: "40px" }}>
+      <style>{paymentStyles}</style>
+      <div className="payment-container">
         <h2>Complete Your Hostel Fees</h2>
         <p>Click below to open the secure Razorpay payment gateway.</p>
-        <button onClick={handlePay} disabled={loading} style={{ padding: "15px 30px", background: "#2563EB", color: "#fff", border: "none", borderRadius: "8px", fontSize: "16px", cursor: "pointer", marginTop: "20px" }}>
+        <button onClick={handlePay} disabled={loading} className="staymate-btn-primary pay-btn">
           {loading ? "Processing..." : "Pay Now via Razorpay"}
         </button>
       </div>
     </Layout>
   );
 }
+
+const paymentStyles = `
+  .payment-container { text-align: center; padding: 60px 20px; background: #FFFFFF; border-radius: 12px; border: 1px solid #A3B18A; box-shadow: 0 4px 12px rgba(52, 78, 65, 0.05); max-width: 500px; margin: 0 auto; }
+  .payment-container h2 { color: #344E41; margin-top: 0; }
+  .payment-container p { color: #588157; margin-bottom: 30px; }
+  .staymate-btn-primary { background-color: #3A5A40; color: #FFFFFF; border: none; border-radius: 8px; padding: 15px 30px; cursor: pointer; transition: all 0.2s; font-size: 16px; font-weight: 600; }
+  .staymate-btn-primary:hover { background-color: #344E41; }
+  .staymate-btn-primary:disabled { background-color: #A3B18A; cursor: not-allowed; }
+`;
+
 export default PaymentPage;

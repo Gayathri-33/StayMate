@@ -157,7 +157,8 @@ public class SuperAdminService {
     // ---------- DASHBOARD ----------
 
     public DashboardStatsDTO getDashboardStats() {
-        long totalAdmins = userRepository.findByRole(Role.ADMIN).size();
+    	// Only count admins whose status is actually APPROVED
+    	long totalAdmins = userRepository.findByRoleAndAdminStatus(Role.ADMIN, AdminStatus.APPROVED).size();
         long pendingAdmins = userRepository.findByRoleAndAdminStatus(Role.ADMIN, AdminStatus.PENDING).size();
         long totalHostels = hostelRepository.count();
         long pendingHostels = hostelRepository.findByStatus(HostelStatus.PENDING).size();
@@ -184,5 +185,12 @@ public class SuperAdminService {
                 .orElseThrow(() -> new RuntimeException("Notification not found"));
         n.setIsRead(true);
         notificationRepository.save(n);
+    }
+    public void updateAdminStatus(Long userId, AdminStatus newStatus) {
+        User user = userRepository.findById(userId)
+            .orElseThrow(() -> new RuntimeException("Admin not found"));
+        
+        user.setAdminStatus(newStatus);
+        userRepository.save(user);
     }
 }

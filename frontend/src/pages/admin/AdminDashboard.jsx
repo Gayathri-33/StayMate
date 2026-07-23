@@ -17,9 +17,10 @@ function AdminDashboard() {
 
   return (
     <Layout title="Admin Dashboard" menuItems={menu}>
+      <style>{dashboardStyles}</style>
       {data ? (
         <>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))", gap: "15px", marginBottom: "30px" }}>
+          <div className="stats-grid">
             <Stat label="Hostels" val={data.hostelCount} />
             <Stat label="Residents" val={data.totalResidents} />
             <Stat label="Total Rooms" val={data.totalRooms} />
@@ -30,20 +31,49 @@ function AdminDashboard() {
           </div>
           
           {data.hostelCount === 1 && data.singleHostel ? (
-            <div style={{ padding: "20px", background: "#F8FAFC", borderRadius: "8px" }}>
+            <div className="info-card">
               <h3>Default Hostel: {data.singleHostel.hostelName} ({data.singleHostel.hostelCode})</h3>
               <p>Type: {data.singleHostel.hostelType} | Fees: ₹{data.singleHostel.feeAmount}/{data.singleHostel.feeCycle}</p>
             </div>
           ) : data.hostelCount > 1 ? (
-            <div>
+            <div className="info-card">
               <h3>Your Hostels</h3>
-              <ul>{data.hostels.map(h => <li key={h.hostelId}><b>{h.hostelName}</b> ({h.hostelCode}) - {h.status}</li>)}</ul>
+              <ul className="hostel-list">
+                {data.hostels.map(h => <li key={h.hostelId}><b>{h.hostelName}</b> ({h.hostelCode}) - <span className={`badge-${h.status.toLowerCase()}`}>{h.status}</span></li>)}
+              </ul>
             </div>
-          ) : <p>No hostels registered yet. Please register a hostel.</p>}
+          ) : <p className="empty-state">No hostels registered yet. Please register a hostel.</p>}
         </>
-      ) : <p>Loading...</p>}
+      ) : <p className="loading-text">Loading dashboard...</p>}
     </Layout>
   );
 }
-function Stat({ label, val }) { return <div style={{ background: "#F1F5F9", padding: "15px", borderRadius: "8px", textAlign: "center" }}><h4 style={{margin:0, color:"#64748B"}}>{label}</h4><p style={{margin:"5px 0 0", fontSize:"24px", fontWeight:"bold"}}>{val}</p></div>; }
+
+function Stat({ label, val }) { 
+  return (
+    <div className="stat-card">
+      <h4>{label}</h4>
+      <p>{val}</p>
+    </div>
+  ); 
+}
+
+const dashboardStyles = `
+  .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 20px; margin-bottom: 30px; }
+  .stat-card { background: #FFFFFF; border: 1px solid #A3B18A; padding: 20px; border-radius: 12px; text-align: center; box-shadow: 0 4px 12px rgba(52, 78, 65, 0.05); transition: transform 0.2s; }
+  .stat-card:hover { transform: translateY(-3px); border-color: #588157; }
+  .stat-card h4 { margin: 0; color: #588157; font-size: 14px; text-transform: uppercase; letter-spacing: 0.5px; }
+  .stat-card p { margin: 10px 0 0; font-size: 26px; font-weight: 700; color: #344E41; }
+  .info-card { background: #FFFFFF; border: 1px solid #A3B18A; padding: 25px; border-radius: 12px; box-shadow: 0 4px 12px rgba(52, 78, 65, 0.05); }
+  .info-card h3 { margin-top: 0; color: #344E41; }
+  .info-card p { color: #588157; font-size: 15px; }
+  .hostel-list { list-style: none; padding: 0; margin: 15px 0 0; }
+  .hostel-list li { padding: 10px 0; border-bottom: 1px solid #DAD7CD; color: #344E41; }
+  .hostel-list li:last-child { border-bottom: none; }
+  .empty-state, .loading-text { color: #588157; font-size: 16px; text-align: center; padding: 40px; background: #FFFFFF; border-radius: 12px; border: 1px dashed #A3B18A; }
+  .badge-pending { background: #A3B18A; color: #344E41; padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: 600; }
+  .badge-approved { background: #3A5A40; color: #FFFFFF; padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: 600; }
+  .badge-rejected { background: #8B2E2E; color: #FFFFFF; padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: 600; }
+`;
+
 export default AdminDashboard;

@@ -31,8 +31,9 @@ public class PaymentSchedulerService {
     // Runs once a day at 1 AM
     @Scheduled(cron = "0 0 1 * * *")
     public void blockOverdueResidents() {
-        List<Resident> overdue = residentRepository.findByStatusAndPaymentDueDateBefore(
-                ResidentStatus.PENDING_PAYMENT, LocalDate.now());
+        // Only block residents who were APPROVED but haven't paid
+        List<Resident> overdue = residentRepository
+            .findByStatusAndPaymentDueDateBefore(ResidentStatus.PENDING_PAYMENT, LocalDate.now());
 
         for (Resident resident : overdue) {
             resident.setStatus(ResidentStatus.BLOCKED);

@@ -30,7 +30,10 @@ public class Resident {
 
     @Enumerated(EnumType.STRING)
     private PaymentStatus paymentStatus = PaymentStatus.PENDING;
-
+    // ADD THIS FIELD
+    @ManyToOne
+    @JoinColumn(name="bed_id")
+    private Bed bed;
     // getters/setters
     public Long getResidentId() { return residentId; }
     public void setResidentId(Long residentId) { this.residentId = residentId; }
@@ -48,4 +51,11 @@ public class Resident {
     public void setStatus(ResidentStatus status) { this.status = status; }
     public PaymentStatus getPaymentStatus() { return paymentStatus; }
     public void setPaymentStatus(PaymentStatus paymentStatus) { this.paymentStatus = paymentStatus; }
+	public Bed getBed() {
+		return bed;
+	}
+	public void setBed(Bed bed) {
+		this.bed = bed;
+	}
+    
 }

@@ -12,4 +12,5 @@ public interface ResidentRepository extends JpaRepository<Resident, Long> {
     List<Resident> findByStatus(ResidentStatus status);
     List<Resident> findByStatusAndPaymentDueDateBefore(ResidentStatus status, LocalDate date);
     Optional<Resident> findByResidentCode(String residentCode);
+    List<Resident> findByHostel_HostelIdAndStatus(Long hostelId, ResidentStatus status);
 }
