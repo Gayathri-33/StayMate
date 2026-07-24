@@ -163,4 +163,16 @@ public class RoomShiftService {
                 s.getReasonLeaving(), s.getReasonWanted(), s.getStatus().name(), s.getRequestedAt()
         );
     }
+    public List<RoomShiftOptionDTO> getAvailableRoomsForShift(Long userId) {
+        Resident resident = residentRepository.findByUser_UserId(userId)
+                .orElseThrow(() -> new RuntimeException("Resident record not found"));
+
+        Long currentRoomId = resident.getBed() != null ? resident.getBed().getRoom().getRoomId() : null;
+
+        return roomRepository.findByHostel_HostelId(resident.getHostel().getHostelId()).stream()
+                .filter(r -> r.getAvailableBeds() > 0)
+                .filter(r -> currentRoomId == null || !r.getRoomId().equals(currentRoomId))
+                .map(r -> new RoomShiftOptionDTO(r.getRoomId(), r.getRoomNumber(), r.getCapacity(), r.getAvailableBeds()))
+                .toList();
+    }
 }

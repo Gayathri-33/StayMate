@@ -24,6 +24,7 @@ const residentService = {
   createPaymentOrder: () => api.post("/resident/payments/create-order"),
   verifyPayment: (data) => api.post("/resident/payments/verify", data),
   getPaymentHistory: () => api.get("/resident/payments/history"),
+  getAvailableRoomsForShift: () => api.get("/residents/available-rooms"),
 };
 
 export default residentService;

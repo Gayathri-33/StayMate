@@ -6,6 +6,7 @@ function RoomShift() {
   const [myRequests, setMyRequests] = useState([]);
   const [availableRooms, setAvailableRooms] = useState([]);
   const [currentRoom, setCurrentRoom] = useState("Not Assigned");
+  const [currentBed, setCurrentBed] = useState("Not Assigned");
   const [showForm, setShowForm] = useState(false);
   const [form, setForm] = useState({ newRoomId: "", reason: "" });
   const [loading, setLoading] = useState(false);
@@ -27,12 +28,12 @@ function RoomShift() {
     // Fetch current room details from dashboard
     residentService.getDashboard().then(res => {
       if (res.data.roomNumber) setCurrentRoom(res.data.roomNumber);
+      if (res.data.bedNumber) setCurrentBed(res.data.bedNumber);
     });
   }, []);
 
   const openForm = async () => {
     try {
-      // FIXED: Use the resident-specific endpoint
       const roomsRes = await residentService.getAvailableRoomsForShift();
       setAvailableRooms(roomsRes.data);
       setShowForm(true);
@@ -47,12 +48,13 @@ function RoomShift() {
     try {
       await residentService.requestRoomShift({
         newRoomId: parseInt(form.newRoomId),
-        reasonLeaving: form.reason, // Sending as reasonLeaving for backend compatibility
+        reasonLeaving: form.reason,
         reasonWanted: "Requested via shift form"
       });
       setForm({ newRoomId: "", reason: "" });
       setShowForm(false);
       refresh();
+      alert("Room shift request submitted successfully!");
     } catch (err) {
       alert(err.response?.data?.error || "Failed to submit request");
     } finally {
@@ -94,18 +96,16 @@ function RoomShift() {
             <h3>Request Room Shift</h3>
             <form onSubmit={handleSubmit}>
               
-              {/* Previous Room (Read Only) */}
               <div className="form-group">
-                <label>Previous Room</label>
+                <label>Current Room</label>
                 <input 
                   type="text" 
-                  value={currentRoom} 
+                  value={`Room ${currentRoom}, Bed ${currentBed}`}
                   disabled 
                   className="staymate-input read-only-input" 
                 />
               </div>
 
-              {/* New Room Requested (Dropdown) */}
               <div className="form-group">
                 <label>New Room Requested</label>
                 <select 
@@ -123,7 +123,6 @@ function RoomShift() {
                 </select>
               </div>
 
-              {/* Reason Textbox */}
               <div className="form-group">
                 <label>Reason for Shift</label>
                 <textarea 

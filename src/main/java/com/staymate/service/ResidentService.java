@@ -6,6 +6,7 @@ import com.staymate.enums.*;
 import com.staymate.repository.*;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.security.SecureRandom;
 import java.time.LocalDate;
@@ -77,6 +78,7 @@ public class ResidentService {
 
     // ---------- REGISTRATION ----------
 
+    @Transactional
     public User register(ResidentRegisterRequest req) {
         if (!req.getPassword().equals(req.getConfirmPassword())) {
             throw new RuntimeException("Passwords do not match");
@@ -95,6 +97,7 @@ public class ResidentService {
             throw new RuntimeException("Selected bed is already occupied. Please choose another.");
         }
 
+        // Create User
         User user = new User();
         user.setFullName(req.getFullName());
         user.setEmail(req.getEmail());
@@ -103,33 +106,29 @@ public class ResidentService {
         user.setRole(Role.RESIDENT);
         user = userRepository.save(user);
 
+        // Create Resident with PENDING status (bed NOT occupied yet)
         Resident resident = new Resident();
         resident.setUser(user);
         resident.setHostel(hostel);
+        resident.setBed(bed);  // Link the bed to resident
         resident.setResidentCode(generateUniqueResidentCode());
         resident.setRegistrationDate(LocalDate.now());
-        
-        // Store selected bed info but DON'T occupy it yet
-        resident.setBed(bed);  // Add bed field to Resident entity if not exists
+        resident.setAddress(req.getAddress());
         
         int bufferDays = hostel.getPaymentBufferDays() != null ? hostel.getPaymentBufferDays() : 3;
         resident.setPaymentDueDate(LocalDate.now().plusDays(bufferDays));
-        
-        // NEW: Status is PENDING until admin approves
-        resident.setStatus(ResidentStatus.PENDING);
+        resident.setStatus(ResidentStatus.PENDING);  // PENDING until admin approves
         resident.setPaymentStatus(PaymentStatus.PENDING);
         resident = residentRepository.save(resident);
 
-        // Notify admin about new resident request
-        if (hostel.getAdmin() != null) {
-            Notification notif = new Notification();
-            notif.setRecipientRole(Role.ADMIN);
-            notif.setRecipientId(hostel.getAdmin().getUserId());
-            notif.setMessage("New resident request from " + user.getFullName() + 
-                " for Room " + bed.getRoom().getRoomNumber() + 
-                ", Bed " + bed.getBedNumber() + ". Awaiting your approval.");
-            notificationRepository.save(notif);
-        }
+        // Notify admin
+        Notification notif = new Notification();
+        notif.setRecipientRole(Role.ADMIN);
+        notif.setRecipientId(hostel.getAdmin().getUserId());
+        notif.setMessage("New resident request from " + user.getFullName() + 
+            " for Room " + bed.getRoom().getRoomNumber() + 
+            ", Bed " + bed.getBedNumber() + ". Awaiting your approval.");
+        notificationRepository.save(notif);
 
         return user;
     }
@@ -190,4 +189,5 @@ public class ResidentService {
         fb.setComments(req.getComments());
         return feedbackRepository.save(fb);
     }
+    
 }

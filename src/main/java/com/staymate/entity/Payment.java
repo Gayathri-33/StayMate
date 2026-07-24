@@ -1,5 +1,6 @@
 package com.staymate.entity;
 
+import com.staymate.enums.FeeCycle;
 import com.staymate.enums.PaymentStatus;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
@@ -23,6 +24,8 @@ public class Payment {
     private PaymentStatus status = PaymentStatus.PENDING;
 
     private LocalDateTime paidOn;
+
+	private FeeCycle feeCycle;
     
     
     // getters/setters
@@ -42,4 +45,14 @@ public class Payment {
     public void setStatus(PaymentStatus status) { this.status = status; }
     public LocalDateTime getPaidOn() { return paidOn; }
     public void setPaidOn(LocalDateTime paidOn) { this.paidOn = paidOn; }
+	public void setCyclePeriod(FeeCycle feeCycle) {
+		// TODO Auto-generated method stub
+		this.feeCycle = feeCycle;
+	}
+	public FeeCycle getFeeCycle() {
+		return feeCycle;
+	}
+	public void setFeeCycle(FeeCycle feeCycle) {
+		this.feeCycle = feeCycle;
+	}
 }

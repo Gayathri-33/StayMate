@@ -67,4 +67,12 @@ public class RoomShiftController {
             return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
         }
     }
+    @GetMapping("/api/resident/room-shift/available-rooms")
+    public ResponseEntity<?> availableRoomsForShift(Authentication auth) {
+        try {
+            return ResponseEntity.ok(roomShiftService.getAvailableRoomsForShift(currentUserId(auth)));
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+        }
+    }
 }

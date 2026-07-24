@@ -42,7 +42,7 @@ public class SecurityConfig {
                             "/api/residents/beds/available/**", "/api/residents/register", "/uploads/**").permitAll().requestMatchers("/api/auth/**", "/api/hostels/public/**").permitAll()
                 .requestMatchers("/api/superadmin/**").hasRole("SUPER_ADMIN")
                 .requestMatchers("/api/admin/**").hasRole("ADMIN")
-                .requestMatchers("/api/resident/**").hasRole("RESIDENT")
+                .requestMatchers("/api/resident/**").authenticated()
                 .anyRequest().authenticated()
             )
             .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
