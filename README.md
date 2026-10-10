@@ -48,7 +48,7 @@ Install the following before running the application:
 ### 1. Clone the repository
 
 ```bash
-git clone <YOUR_GITHUB_REPOSITORY_URL>
+git clone https://github.com/Gayathri-33/StayMate.git
 cd StayMate
 ```
 
@@ -107,7 +107,7 @@ Developing StayMate provided practical experience with full-stack application ar
 
 ## Project Links
 
-- **GitHub Repository:** <YOUR_GITHUB_REPOSITORY_URL>
+- **GitHub Repository:** https://github.com/Gayathri-33/StayMate.git
 - **Live Demo:** Add a link if the application is publicly deployed.
 
 ## Author
