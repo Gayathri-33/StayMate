@@ -1,6 +1,6 @@
 # StayMate — Hostel Management System
 
-StayMate is a full-stack hostel management application designed to simplify hostel operations through a centralized web interface. It connects a React frontend with a Java Spring Boot backend and a MySQL database to support hostel management workflows.
+I developed StayMate, a full-stack hostel management application using React, Java, Spring Boot, and MySQL. The project includes frontend-to-backend integration and backend functionality for hostel management. I documented the project's architecture, technology stack, and local setup instructions in the GitHub repository. Although the application is not currently deployed publicly, I can demonstrate the code and explain my implementation and technical decisions.
 
 ## Features
 
