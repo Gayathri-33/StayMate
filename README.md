@@ -106,7 +106,6 @@ Developing StayMate provided practical experience with full-stack application ar
 ## Project Links
 
 - **GitHub Repository:** https://github.com/Gayathri-33/StayMate.git
-- **Live Demo:** Add a link if the application is publicly deployed.
 
 ## Author
 
