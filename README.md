@@ -51,8 +51,7 @@ Install the following before running the application:
 git clone https://github.com/Gayathri-33/StayMate.git
 cd StayMate
 ```
-
-Replace the URL with your actual repository URL. Use the directory name created by Git if it differs from `StayMate`.
+.
 
 ### 2. Configure the database
 
@@ -74,7 +73,6 @@ Open a terminal in the backend project directory and run:
 mvn spring-boot:run
 ```
 
-If the project uses the Maven Wrapper, use the appropriate wrapper command for your operating system.
 
 ### 4. Run the frontend
 
